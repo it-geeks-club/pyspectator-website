@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CPU - pyspectator Demo</title>
+
+    <!-- Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- SB Admin CSS -->
+    <link href="css/sb-admin.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">pyspectator</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="/user/profile/username"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="/auth/login"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default navbar-static-side" role="navigation">
+                <div class="sidebar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="/monitor/general"><i class="fa fa-desktop fa-fw"></i> General</a>
+                        </li>
+                        <li>
+                            <a href="/monitor/cpu"><i class="fa fa-tachometer fa-fw"></i> CPU</a>
+                        </li>
+                        <li>
+                            <a href="/monitor/memory"><i class="fa fa-bar-chart-o fa-fw"></i> Memory</a>
+                        </li>
+                        <li>
+                            <a href="/monitor/disk"><i class="fa fa-inbox fa-fw"></i> Disk</a>
+                        </li>
+                        <li>
+                            <a href="/monitor/network"><i class="fa fa-sitemap fa-fw"></i> Network</a>
+                        </li>
+                        <li>
+                            <a href="/about"><i class="fa fa-info-circle fa-fw"></i> About</a>
+                        </li>
+                    </ul>
+                    <!-- /#side-menu -->
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">CPU information</h1>
+
+                    <dl class="dl-horizontal">
+                        <dt>Name</dt>
+                        <dd>Intel(R) Core(TM) i3-3110M CPU @ 2.40GHz</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Amount of cores</dt>
+                        <dd>4</dd>
+                    </dl>
+                    <dl class="dl-horizontal">
+                        <dt>Load</dt>
+                        <dd>42%</dd>
+                    </dl>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            CPU load
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <div class="flot-chart">
+                                <div class="flot-chart-content" id="cpu-load-chart"></div>
+                            </div>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Core Scripts -->
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+
+    <!-- Plugin Scripts - Flot -->
+    <!--[if lte IE 8]><script src="js/plugins/excanvas.min.js"></script><![endif]-->
+    <script src="js/plugins/flot/jquery.flot.js"></script>
+    <script src="js/plugins/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="js/plugins/flot/jquery.flot.resize.js"></script>
+    <script src="js/plugins/flot/jquery.flot.pie.js"></script>
+
+    <!-- SB Admin Scripts -->
+    <script src="js/sb-admin.js"></script>
+
+    <!-- Page-Level Scripts -->
+    <script src="js/monitor/cpu.js"></script>
+
+</body>
+
+</html>
