@@ -10,6 +10,13 @@
         {% block title %}Blank page{% end %} - pyspectator Demo
     </title>
 
+    <!-- Fake favicon -->
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+    <!-- Actual favicon -->
+    <link href="{{ static_url('img/favicon.png') }}" rel="icon" type="image/png" media="all">
+    <!-- Favicon for iOS -->
+    <link href="{{ static_url('img/favicon.png') }}" rel="apple-touch-icon">
+
     <!-- Core CSS -->
     <link href="{{ static_url('css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ static_url('css/font-awesome.min.css') }}" rel="stylesheet">
