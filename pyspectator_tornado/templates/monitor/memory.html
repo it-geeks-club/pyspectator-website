@@ -1,0 +1,47 @@
+{% extends '../blank_with_menu.html' %}
+
+
+{% block title %}Memory{% end %}
+
+
+{% block content %}
+<dl class="dl-horizontal">
+    <dt>Total</dt>
+    <dd>6.0GB</dd>
+</dl>
+<dl class="dl-horizontal">
+    <dt>Use</dt>
+    <dd>2.5GB</dd>
+</dl>
+<dl class="dl-horizontal">
+    <dt>Free</dt>
+    <dd>68%</dd>
+</dl>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Memory usage
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <div class="flot-chart">
+            <div class="flot-chart-content" id="memory-load-chart"></div>
+        </div>
+    </div>
+    <!-- /.panel-body -->
+</div>
+<!-- /.panel -->
+{% end %}
+
+
+{% block js %}
+<!-- Plugin Scripts - Flot -->
+<!--[if lte IE 8]><script src="{{ static_url('js/plugins/excanvas.min.js') }}"></script><![endif]-->
+<script src="{{ static_url('js/plugins/flot/jquery.flot.js') }}"></script>
+<script src="{{ static_url('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
+<script src="{{ static_url('js/plugins/flot/jquery.flot.resize.js') }}"></script>
+<script src="{{ static_url('js/plugins/flot/jquery.flot.pie.js') }}"></script>
+
+<!-- Page-Level Script -->
+<script src="{{ static_url('js/monitor/memory.js') }}"></script>
+{% end %}

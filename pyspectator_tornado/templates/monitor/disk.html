@@ -1,0 +1,49 @@
+{% extends '../blank_with_menu.html' %}
+
+
+{% block title %}Disk{% end %}
+
+
+{% block content %}
+<div class="row" data-device-name="/dev/sda1">
+    <div class="row">
+        <div class="col-lg-9">
+            <b>/dev/sda1</b> (mounted as "/") in the ext4 file system
+        </div>
+        <div class="col-lg-3 text-right">
+            <span class="label label-info">
+                45GB / 100GB
+            </span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="progress progress-striped active">
+                <div class="progress-bar" style="width: 45%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row" data-device-name="/dev/sda1">
+    <div class="row">
+        <div class="col-lg-9">
+            <b>/dev/sda2</b> (mounted as "/var") in the ext4 file system
+        </div>
+        <div class="col-lg-3 text-right">
+            <span class="label label-info">
+                75GB / 100GB
+            </span>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="progress progress-striped active">
+                <div class="progress-bar" style="width: 75%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}

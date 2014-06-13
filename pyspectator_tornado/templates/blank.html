@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}Blank page{% end %} - pyspectator Demo
+    </title>
+
+    <!-- Core CSS -->
+    <link href="{{ static_url('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ static_url('css/font-awesome.min.css') }}" rel="stylesheet">
+
+    <!-- SB Admin CSS -->
+    <link href="{{ static_url('css/sb-admin.css') }}" rel="stylesheet">
+
+    {% block top_css %}{% end %}
+    {% block css %}{% end %}
+
+</head>
+
+<body>
+    {% block body %}{% end %}
+
+    <!-- Core Scripts -->
+    <script src="{{ static_url('js/jquery-1.11.1.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+    <script src="{{ static_url('js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>
+
+    <!-- SB Admin Script -->
+    <script src="{{ static_url('js/sb-admin.js') }}"></script>
+
+    {% block top_js %}{% end %}
+    {% block js %}{% end %}
+
+</body>
+
+</html>
