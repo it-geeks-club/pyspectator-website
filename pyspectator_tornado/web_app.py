@@ -1,7 +1,7 @@
 import os
 import base64
 from enum import IntEnum
-from tornado.web import RequestHandler, Application
+from tornado.web import RequestHandler as NativeRequestHandler, Application
 
 
 class Mode(IntEnum):
@@ -20,7 +20,8 @@ class WebApplication(Application):
             (r'/monitor/cpu', MonitorCpuHandler),
             (r'/monitor/memory', MonitorMemoryHandler),
             (r'/monitor/disk', MonitorDiskHandler),
-            (r'/monitor/network', MonitorNetworkHandler)
+            (r'/monitor/network', MonitorNetworkHandler),
+            (r'.*', ErrorHandler),
         ]
         default_port = 8888
         settings = {
@@ -60,53 +61,58 @@ class WebApplication(Application):
                 #'xsrf_cookies': True
             })
         self.port = default_port if port is None else port
-        #super().__init__(self, handlers, **settings)
-        Application.__init__(self, handlers, **settings)
+        super().__init__(handlers, **settings)
 
 
-class ExtendedRequestHandler(RequestHandler):
+class ErrorHandler(NativeRequestHandler):
+
+    def get(self):
+        self.render('error/404.html')
+
+
+class RequestHandler(NativeRequestHandler):
 
     def get_current_user(self):
         return None
 
 
-class AuthLoginHandler(ExtendedRequestHandler):
+class AuthLoginHandler(RequestHandler):
 
     def get(self):
         self.render('auth/login.html')
 
 
-class UserProfileHandler(ExtendedRequestHandler):
+class UserProfileHandler(RequestHandler):
 
     def get(self, username):
         self.render('user/profile.html')
 
 
-class MonitorGeneralHandler(ExtendedRequestHandler):
+class MonitorGeneralHandler(RequestHandler):
 
     def get(self):
         self.render('monitor/general.html')
 
 
-class MonitorCpuHandler(ExtendedRequestHandler):
+class MonitorCpuHandler(RequestHandler):
 
     def get(self):
         self.render('monitor/cpu.html')
 
 
-class MonitorMemoryHandler(ExtendedRequestHandler):
+class MonitorMemoryHandler(RequestHandler):
 
     def get(self):
         self.render('monitor/memory.html')
 
 
-class MonitorDiskHandler(ExtendedRequestHandler):
+class MonitorDiskHandler(RequestHandler):
 
     def get(self):
         self.render('monitor/disk.html')
 
 
-class MonitorNetworkHandler(ExtendedRequestHandler):
+class MonitorNetworkHandler(RequestHandler):
 
     def get(self):
         self.render('monitor/network.html')

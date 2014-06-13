@@ -1,0 +1,38 @@
+{% extends '../blank.html' %}
+
+
+{% block title %}
+Page not found
+{% end %}
+
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+
+            <h1>
+                <span class="fa fa-frown-o fa-5x"></span>
+                <br>
+                <span class="text-danger">Oops, page not found!</span>
+            </h1>
+            <p class="lead text-muted">You may have mis-typed the URL. Please check your spelling.</p>
+
+            <hr>
+
+            <ul class="list-inline">
+                <li>
+                    <a href="/">Go home</a>
+                </li>
+                <li>
+                    <a href="/auth/login">Login</a>
+                </li>
+                <li>
+                    <a href="/about">About site</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+{% end %}
