@@ -21,7 +21,7 @@ class WebApplication(Application):
             (r'/monitor/memory', MonitorMemoryHandler),
             (r'/monitor/disk', MonitorDiskHandler),
             (r'/monitor/network', MonitorNetworkHandler),
-            (r'.*', ErrorHandler),
+            (r'.*', PageNotFoundHandler),
         ]
         default_port = 8888
         settings = {
@@ -64,21 +64,30 @@ class WebApplication(Application):
         super().__init__(handlers, **settings)
 
 
-class ErrorHandler(NativeRequestHandler):
-
-    def get(self):
-        self.render('error/404.html')
-
-
 class RequestHandler(NativeRequestHandler):
 
     def get_current_user(self):
         return None
 
+    def write_error(self, status_code, **kwargs):
+        if status_code == 405:
+            page = '/error/405.html'
+        elif status_code == 404:
+            page = '/error/404.html'
+        else:
+            page = '/error/500.html'
+        self.render(page)
+
+
+class PageNotFoundHandler(RequestHandler):
+
+    def get(self):
+        self.render('error/404.html')
+
 
 class AuthLoginHandler(RequestHandler):
 
-    def get(self):
+    def post(self):
         self.render('auth/login.html')
 
 
