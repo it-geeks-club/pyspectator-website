@@ -15,6 +15,7 @@ class WebApplication(Application):
     def __init__(self, mode=Mode.debug, address=None, port=None):
         self.address = address
         handlers = [
+            (r'/', MonitorGeneralHandler),
             (r'/auth/login', AuthLoginHandler),
             (r'/user/profile/([a-zA-Z0-9_])+', UserProfileHandler),
             (r'/monitor/general', MonitorGeneralHandler),
