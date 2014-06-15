@@ -21,6 +21,7 @@ class WebApplication(Application):
             (r'/monitor/memory', MonitorMemoryHandler),
             (r'/monitor/disk', MonitorDiskHandler),
             (r'/monitor/network', MonitorNetworkHandler),
+            (r'/about', AboutPageHandler),
             (r'.*', PageNotFoundHandler),
         ]
         default_port = 8888
@@ -74,8 +75,10 @@ class RequestHandler(NativeRequestHandler):
             page = '/error/405.html'
         elif status_code == 404:
             page = '/error/404.html'
-        else:
+        elif status_code == 500:
             page = '/error/500.html'
+        else:
+            page = '/error/unknown.html'
         self.render(page)
 
 
@@ -125,3 +128,9 @@ class MonitorNetworkHandler(RequestHandler):
 
     def get(self):
         self.render('monitor/network.html')
+
+
+class AboutPageHandler(RequestHandler):
+
+    def get(self):
+        self.render('about.html')
