@@ -17,6 +17,9 @@ class WebServer(object):
         return self.__is_alive
 
     def __on_shutdown(self):
+        # Stop pyspectator
+        self.web_app.computer.start_monitoring()
+        # Stop event loop
         self.__io_loop.stop()
 
     def enable_autoreload(self, watch_dirs=list()):
@@ -47,5 +50,7 @@ class WebServer(object):
             self.enable_autoreload([self.web_app.settings['template_path'], ])
         # Add shutdown handler
         signal.signal(signal.SIGINT, lambda sig, frame: self.__io_loop.add_callback_from_signal(self.__on_shutdown))
-        # Start web server
+        # Start pyspectator
+        self.web_app.computer.start_monitoring()
+        # Start event loop
         self.__io_loop.start()

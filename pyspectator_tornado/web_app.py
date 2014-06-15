@@ -2,6 +2,7 @@ import os
 import base64
 from enum import IntEnum
 from tornado.web import RequestHandler as NativeRequestHandler, Application
+from pyspectator.computer import Computer
 
 
 class Mode(IntEnum):
@@ -62,6 +63,7 @@ class WebApplication(Application):
                 #'xsrf_cookies': True
             })
         self.port = default_port if port is None else port
+        self.computer = Computer()
         super().__init__(handlers, **settings)
 
 
