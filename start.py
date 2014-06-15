@@ -32,8 +32,9 @@ def main():
         address=options.address,
         port=options.port
     )
-    # Run http server with given web application
-    WebServer.run(web_app)
+    # Create and run web server with given web application
+    server = WebServer(web_app)
+    server.run()
 
 
 if __name__ == '__main__':

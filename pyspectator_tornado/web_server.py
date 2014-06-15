@@ -1,4 +1,5 @@
 import os
+import signal
 from tornado import autoreload
 from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
@@ -6,28 +7,45 @@ from tornado.httpserver import HTTPServer
 
 class WebServer(object):
 
-    @staticmethod
-    def enable_autoreload(ioloop, watch_dirs=list()):
+    def __init__(self, web_app):
+        self.web_app = web_app
+        self.__io_loop = None
+        self.__is_alive = False
+
+    @property
+    def is_alive(self):
+        return self.__is_alive
+
+    def __on_shutdown(self):
+        self.__io_loop.stop()
+
+    def enable_autoreload(self, watch_dirs=list()):
         for current_dir in watch_dirs:
             if not os.path.isdir(current_dir):
                 continue
             for (path, dirs, files) in os.walk(current_dir):
                 for item in files:
                     autoreload.watch(os.path.join(path, item))
-        autoreload.start(ioloop)
+        autoreload.start(self.__io_loop)
 
-    @staticmethod
-    def run(web_app):
+    def run(self):
+        # Server is already running
+        if self.is_alive:
+            return True
+        # Mark server as alive
+        self.__is_alive = True
         # Create http server
-        http_server = HTTPServer(web_app)
-        if web_app.address is None:
-            http_server.listen(web_app.port, address=web_app.address)
+        http_server = HTTPServer(self.web_app)
+        if self.web_app.address is None:
+            http_server.listen(self.web_app.port, address=self.web_app.address)
         else:
-            http_server.listen(web_app.port)
+            http_server.listen(self.web_app.port)
         # Init web server
-        ioloop = IOLoop.instance()
+        self.__io_loop = IOLoop.instance()
         # Add autoreload if this option enabled in settings
-        if web_app.settings['autoreload'] is True:
-            WebServer.enable_autoreload(ioloop, [web_app.settings['template_path'], ])
+        if self.web_app.settings['autoreload'] is True:
+            self.enable_autoreload([self.web_app.settings['template_path'], ])
+        # Add shutdown handler
+        signal.signal(signal.SIGINT, lambda sig, frame: self.__io_loop.add_callback_from_signal(self.__on_shutdown))
         # Start web server
-        ioloop.start()
+        self.__io_loop.start()
