@@ -72,13 +72,13 @@ class RequestHandler(NativeRequestHandler):
 
     def write_error(self, status_code, **kwargs):
         if status_code == 405:
-            page = '/error/405.html'
+            page = 'error/405.html'
         elif status_code == 404:
-            page = '/error/404.html'
+            page = 'error/404.html'
         elif status_code == 500:
-            page = '/error/500.html'
+            page = 'error/500.html'
         else:
-            page = '/error/unknown.html'
+            page = 'error/unknown.html'
         self.render(page)
 
 
@@ -90,7 +90,7 @@ class PageNotFoundHandler(RequestHandler):
 
 class AuthLoginHandler(RequestHandler):
 
-    def post(self):
+    def get(self):
         self.render('auth/login.html')
 
 
