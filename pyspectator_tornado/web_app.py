@@ -3,6 +3,7 @@ import base64
 from enum import IntEnum
 from tornado.web import RequestHandler as NativeRequestHandler, Application
 from pyspectator.computer import Computer
+from pyspectator.convert import UnitByte
 
 
 class Mode(IntEnum):
@@ -70,6 +71,10 @@ class WebApplication(Application):
 
 class RequestHandler(NativeRequestHandler):
 
+    @property
+    def computer(self):
+        return self.application.computer
+
     def get_current_user(self):
         return None
 
@@ -106,7 +111,40 @@ class UserProfileHandler(RequestHandler):
 class MonitorGeneralHandler(RequestHandler):
 
     def get(self):
-        self.render('monitor/general.html')
+        self.render('monitor/general.html', computer=self.obj2json())
+
+    def obj2json(self):
+        # General information
+        json = {
+            'os': self.computer.os,
+            'architecture': self.computer.architecture,
+            'hostname': self.computer.hostname,
+            'cpu_name': self.computer.processor.name,
+            'boot_time': self.computer.boot_time,
+            'uptime': self.computer.uptime
+        }
+        # Total virtual memory
+        try:
+            val, unit = UnitByte.auto_convert(self.computer.virtual_memory.total)
+            val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
+            total_mem = val + unit
+        except:
+            total_mem = '0'
+        json['total_mem'] = total_mem
+        # Total disk memory
+        try:
+            total_disk_mem = 0
+            for dev in self.computer.nonvolatile_memory:
+                if isinstance(dev.total, (int, float)):
+                    total_disk_mem += dev.total
+            val, unit = UnitByte.auto_convert(total_disk_mem)
+            val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
+            total_disk_mem = val + unit
+        except:
+            total_disk_mem = '0'
+        json['total_disk_mem'] = total_disk_mem
+
+        return json
 
 
 class MonitorCpuHandler(RequestHandler):

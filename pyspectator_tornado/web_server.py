@@ -18,7 +18,7 @@ class WebServer(object):
 
     def __on_shutdown(self):
         # Stop pyspectator
-        self.web_app.computer.start_monitoring()
+        self.web_app.computer.stop_monitoring()
         # Stop event loop
         self.__io_loop.stop()
 

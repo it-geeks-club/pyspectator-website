@@ -7,33 +7,33 @@
 {% block content %}
 <dl class="dl-horizontal">
     <dt>Operation system</dt>
-    <dd>Ubuntu 12.04 LTS</dd>
+    <dd>{{ computer['os'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Architecture</dt>
-    <dd>64-bit</dd>
+    <dd>{{ computer['architecture'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Hostname</dt>
-    <dd>workstation</dd>
+    <dd>{{ computer['hostname'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>CPU</dt>
-    <dd>Intel(R) Core(TM) i3-3110M CPU @ 2.40GHz</dd>
+    <dd>{{ computer['cpu_name'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Boot time</dt>
     <dd>
-        12:50:00 12.06.2014
-        <span class="label label-info" id="uptime">02:48:00 online</span>
+        {{ computer['boot_time'] }}
+        <span class="label label-info" id="uptime">{{ computer['uptime'] }}</span>
     </dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Total memory</dt>
-    <dd>6GB</dd>
+    <dd>{{ computer['total_mem'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Total disk memory</dt>
-    <dd>600GB</dd>
+    <dd>{{ computer['total_disk_mem'] }}</dd>
 </dl>
 {% end %}
