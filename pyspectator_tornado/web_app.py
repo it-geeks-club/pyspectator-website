@@ -111,11 +111,11 @@ class UserProfileHandler(RequestHandler):
 class MonitorGeneralHandler(RequestHandler):
 
     def get(self):
-        self.render('monitor/general.html', computer=self.obj2json())
+        self.render('monitor/general.html', computer=self.__get_general_info())
 
-    def obj2json(self):
+    def __get_general_info(self):
         # General information
-        json = {
+        info = {
             'os': self.computer.os,
             'architecture': self.computer.architecture,
             'hostname': self.computer.hostname,
@@ -130,7 +130,7 @@ class MonitorGeneralHandler(RequestHandler):
             total_mem = val + unit
         except:
             total_mem = '0'
-        json['total_mem'] = total_mem
+        info['total_mem'] = total_mem
         # Total disk memory
         try:
             total_disk_mem = 0
@@ -142,9 +142,9 @@ class MonitorGeneralHandler(RequestHandler):
             total_disk_mem = val + unit
         except:
             total_disk_mem = '0'
-        json['total_disk_mem'] = total_disk_mem
+        info['total_disk_mem'] = total_disk_mem
 
-        return json
+        return info
 
 
 class MonitorCpuHandler(RequestHandler):
@@ -168,7 +168,31 @@ class MonitorDiskHandler(RequestHandler):
 class MonitorNetworkHandler(RequestHandler):
 
     def get(self):
-        self.render('monitor/network.html')
+        self.render('monitor/network.html', network=self.__get_network_info())
+
+    def __get_network_info(self):
+        info = {
+            'hostname': self.computer.hostname,
+            'mac_address': self.computer.network_interface.hardware_address,
+            'ip_address': self.computer.network_interface.ip_address,
+            'mask': self.computer.network_interface.subnet_mask,
+            'gateway': self.computer.network_interface.default_route
+        }
+        try:
+            val, unit = UnitByte.auto_convert(self.computer.network_interface.bytes_sent)
+            val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
+            bytes_sent = val + unit
+        except:
+            bytes_sent = '0'
+        info['bytes_sent'] = bytes_sent
+        try:
+            val, unit = UnitByte.auto_convert(self.computer.network_interface.bytes_received)
+            val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
+            bytes_received = val + unit
+        except:
+            bytes_received = '0'
+        info['bytes_received'] = bytes_received
+        return info
 
 
 class AboutPageHandler(RequestHandler):

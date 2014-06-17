@@ -7,30 +7,30 @@
 {% block content %}
 <dl class="dl-horizontal">
     <dt>Hostname</dt>
-    <dd>WorkStation</dd>
+    <dd>{{ network['hostname'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>MAC address</dt>
-    <dd>12-34-56-78-9A-BC</dd>
+    <dd>{{ network['mac_address'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>IP address</dt>
-    <dd>192.166.199.222</dd>
+    <dd>{{ network['ip_address'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Mask</dt>
-    <dd>255.255.255.0</dd>
+    <dd>{{ network['mask'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Gateway</dt>
-    <dd>192.168.199.1</dd>
+    <dd>{{ network['gateway'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Bytes sent</dt>
-    <dd>465MB</dd>
+    <dd>{{ network['bytes_sent'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Bytes received</dt>
-    <dd>115MB</dd>
+    <dd>{{ network['bytes_received'] }}</dd>
 </dl>
 {% end %}
