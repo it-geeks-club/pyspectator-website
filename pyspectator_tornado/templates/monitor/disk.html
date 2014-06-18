@@ -8,21 +8,21 @@
     {% for dev in devices %}
         <div class="row" data-device-name="{{ dev['device'] }}">
             <div class="row">
-                <div class="col-md-9 col-lg-9">
+                <div class="col-sm-9 col-md-9 col-lg-9">
                     <b>{{ dev['device'] }}</b>
                     {% if (dev['mountpoint'] is not None) and (dev['mountpoint'] != dev['device']) %}
                         (mounted as "{{ dev['mountpoint'] }}")
                     {% end %}
                     in the {{ dev['fstype'] }} file system
                 </div>
-                <div class="col-md-3 col-lg-3 text-right">
+                <div class="col-sm-3 col-md-3 col-lg-3 text-right">
                     <span class="label label-info">
                         {{ dev['used'] }} / {{ dev['total'] }}
                     </span>
                 </div>
             </div>
             <div class="row" style="margin-top: 2px;">
-                <div class="col-md-12 col-lg-12">
+                <div class="col-sm-12 col-md-12 col-lg-12">
                     <div class="progress progress-striped active">
                         {% if dev['used_percent'] <= 50 %}
                             <div class="progress-bar progress-bar-success" style="width: {{ dev['used_percent'] }}%">
