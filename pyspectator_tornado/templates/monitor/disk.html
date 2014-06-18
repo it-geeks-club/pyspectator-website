@@ -5,45 +5,39 @@
 
 
 {% block content %}
-<div class="row" data-device-name="/dev/sda1">
-    <div class="row">
-        <div class="col-lg-9">
-            <b>/dev/sda1</b> (mounted as "/") in the ext4 file system
-        </div>
-        <div class="col-lg-3 text-right">
-            <span class="label label-info">
-                45GB / 100GB
-            </span>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="progress progress-striped active">
-                <div class="progress-bar" style="width: 45%"></div>
+    {% for dev in devices %}
+        <div class="row" data-device-name="{{ dev['device'] }}">
+            <div class="row">
+                <div class="col-md-9 col-lg-9">
+                    <b>{{ dev['device'] }}</b>
+                    {% if (dev['mountpoint'] is not None) and (dev['mountpoint'] != dev['device']) %}
+                        (mounted as "{{ dev['mountpoint'] }}")
+                    {% end %}
+                    in the {{ dev['fstype'] }} file system
+                </div>
+                <div class="col-md-3 col-lg-3 text-right">
+                    <span class="label label-info">
+                        {{ dev['used'] }} / {{ dev['total'] }}
+                    </span>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 2px;">
+                <div class="col-md-12 col-lg-12">
+                    <div class="progress progress-striped active">
+                        {% if dev['used_percent'] <= 50 %}
+                            <div class="progress-bar progress-bar-success" style="width: {{ dev['used_percent'] }}%">
+                            </div>
+                        {% elif dev['used_percent'] <= 75 %}
+                            <div class="progress-bar progress-bar-warning" style="width: {{ dev['used_percent'] }}%">
+                            </div>
+                        {% else %}
+                            <div class="progress-bar progress-bar-danger" style="width: {{ dev['used_percent'] }}%">
+                            </div>
+                        {% end %}
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<hr>
-<div class="row" data-device-name="/dev/sda1">
-    <div class="row">
-        <div class="col-lg-9">
-            <b>/dev/sda2</b> (mounted as "/var") in the ext4 file system
-        </div>
-        <div class="col-lg-3 text-right">
-            <span class="label label-info">
-                75GB / 100GB
-            </span>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="progress progress-striped active">
-                <div class="progress-bar" style="width: 75%"></div>
-            </div>
-        </div>
-    </div>
-</div>
+        <hr>
+    {% end %}
 {% end %}

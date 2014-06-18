@@ -183,7 +183,23 @@ class MonitorMemoryHandler(RequestHandler):
 class MonitorDiskHandler(RequestHandler):
 
     def get(self):
-        self.render('monitor/disk.html')
+        self.render('monitor/disk.html', devices=self.__get_disk_info())
+
+    def __get_disk_info(self):
+        info = list()
+        for dev in self.computer.nonvolatile_memory:
+            used_percent = dev.used_percent
+            if used_percent is None:
+                used_percent = 0
+            info.append({
+                'device': dev.device,
+                'mountpoint': dev.mountpoint,
+                'fstype': dev.fstype,
+                'used': self._format_bytes(dev.used),
+                'total': self._format_bytes(dev.total),
+                'used_percent': used_percent
+            })
+        return info
 
 
 class MonitorNetworkHandler(RequestHandler):
