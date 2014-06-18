@@ -1,0 +1,4 @@
+include runner README.rst
+include runner LICENSE
+recursive-include pyspectator_tornado/static *
+recursive-include pyspectator_tornado/templates *

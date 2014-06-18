@@ -2,7 +2,7 @@
 Summary
 ==================
 
-pyspactator-tornado is a web-monitoring tool ported on Tornado with pyspactator as a main monitoring module.
+pyspectator_tornado is a web-monitoring tool ported on Tornado with pyspectator as a main monitoring module.
 
 
 ==================
@@ -22,7 +22,7 @@ Run as root user:
 
 .. code-block:: bash
 
-    pip install pyspectator-tornado
+    pip install pyspectator_tornado
 
 
 ==================
