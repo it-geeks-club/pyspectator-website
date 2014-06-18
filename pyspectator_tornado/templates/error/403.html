@@ -1,0 +1,38 @@
+{% extends '../blank.html' %}
+
+
+{% block title %}
+Access denied
+{% end %}
+
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+
+            <h1>
+                <span class="fa fa-lock fa-5x"></span>
+                <br>
+                <span class="text-danger">Access denied!</span>
+            </h1>
+            <p class="lead text-muted">You don't have permission to access the requested web page.</p>
+
+            <hr>
+
+            <ul class="list-inline">
+                <li>
+                    <a href="/">Go home</a>
+                </li>
+                <li>
+                    <a href="/auth/login">Login page</a>
+                </li>
+                <li>
+                    <a href="/about">About site</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</div>
+{% end %}

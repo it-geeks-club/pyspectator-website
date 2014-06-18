@@ -79,10 +79,12 @@ class RequestHandler(NativeRequestHandler):
         return None
 
     def write_error(self, status_code, **kwargs):
-        if status_code == 405:
-            page = 'error/405.html'
+        if status_code == 403:
+            page = 'error/403.html'
         elif status_code == 404:
             page = 'error/404.html'
+        elif status_code == 405:
+            page = 'error/405.html'
         elif status_code == 500:
             page = 'error/500.html'
         else:
