@@ -7,15 +7,15 @@
 {% block content %}
 <dl class="dl-horizontal">
     <dt>Name</dt>
-    <dd>Intel(R) Core(TM) i3-3110M CPU @ 2.40GHz</dd>
+    <dd>{{ cpu['name'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Amount of cores</dt>
-    <dd>4</dd>
+    <dd>{{ cpu['count'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Load</dt>
-    <dd>42%</dd>
+    <dd>{{ cpu['load'] }}%</dd>
 </dl>
 
 <div class="panel panel-default">

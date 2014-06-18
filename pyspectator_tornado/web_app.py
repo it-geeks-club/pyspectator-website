@@ -150,7 +150,18 @@ class MonitorGeneralHandler(RequestHandler):
 class MonitorCpuHandler(RequestHandler):
 
     def get(self):
-        self.render('monitor/cpu.html')
+        self.render('monitor/cpu.html', cpu=self.__get_cpu_info())
+
+    def __get_cpu_info(self):
+        cpu_load = self.computer.processor.load
+        if cpu_load is None:
+            cpu_load = 0
+        info = {
+            'name': self.computer.processor.name,
+            'count': self.computer.processor.count,
+            'load': cpu_load
+        }
+        return info
 
 
 class MonitorMemoryHandler(RequestHandler):
