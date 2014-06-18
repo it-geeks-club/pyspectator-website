@@ -197,7 +197,7 @@ class MonitorNetworkHandler(RequestHandler):
             bytes_sent = '0'
         info['bytes_sent'] = bytes_sent
         try:
-            val, unit = UnitByte.auto_convert(self.computer.network_interface.bytes_received)
+            val, unit = UnitByte.auto_convert(self.computer.network_interface.bytes_recv)
             val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
             bytes_received = val + unit
         except:
