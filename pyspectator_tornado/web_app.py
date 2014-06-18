@@ -89,6 +89,17 @@ class RequestHandler(NativeRequestHandler):
             page = 'error/unknown.html'
         self.render(page)
 
+    def _format_bytes(self, byte_value):
+        try:
+            if (byte_value is None) or (byte_value == 0):
+                byte_value = '0'
+            elif isinstance(byte_value, (int, float)):
+                val, unit = UnitByte.auto_convert(byte_value)
+                val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
+                byte_value = val + unit
+        finally:
+            return byte_value
+
 
 class PageNotFoundHandler(RequestHandler):
 
@@ -114,6 +125,11 @@ class MonitorGeneralHandler(RequestHandler):
         self.render('monitor/general.html', computer=self.__get_general_info())
 
     def __get_general_info(self):
+        # Calculate total disk memory
+        total_disk_mem = 0
+        for dev in self.computer.nonvolatile_memory:
+            if isinstance(dev.total, (int, float)):
+                total_disk_mem += dev.total
         # General information
         info = {
             'os': self.computer.os,
@@ -121,29 +137,10 @@ class MonitorGeneralHandler(RequestHandler):
             'hostname': self.computer.hostname,
             'cpu_name': self.computer.processor.name,
             'boot_time': self.computer.boot_time,
-            'uptime': self.computer.uptime
+            'uptime': self.computer.uptime,
+            'total_mem': self._format_bytes(self.computer.virtual_memory.total),
+            'total_disk_mem': self._format_bytes(total_disk_mem)
         }
-        # Total virtual memory
-        try:
-            val, unit = UnitByte.auto_convert(self.computer.virtual_memory.total)
-            val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
-            total_mem = val + unit
-        except:
-            total_mem = '0'
-        info['total_mem'] = total_mem
-        # Total disk memory
-        try:
-            total_disk_mem = 0
-            for dev in self.computer.nonvolatile_memory:
-                if isinstance(dev.total, (int, float)):
-                    total_disk_mem += dev.total
-            val, unit = UnitByte.auto_convert(total_disk_mem)
-            val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
-            total_disk_mem = val + unit
-        except:
-            total_disk_mem = '0'
-        info['total_disk_mem'] = total_disk_mem
-
         return info
 
 
@@ -169,6 +166,17 @@ class MonitorMemoryHandler(RequestHandler):
     def get(self):
         self.render('monitor/memory.html')
 
+    def __get_memory_info(self):
+        used_percent = self.computer.virtual_memory.used_percent
+        if used_percent is None:
+            used_percent = 0
+        info = {
+            'total': self._format_bytes(self.computer.virtual_memory.total),
+            'available': self._format_bytes(self.computer.virtual_memory.available),
+            'used_percent': used_percent
+        }
+        return info
+
 
 class MonitorDiskHandler(RequestHandler):
 
@@ -187,22 +195,10 @@ class MonitorNetworkHandler(RequestHandler):
             'mac_address': self.computer.network_interface.hardware_address,
             'ip_address': self.computer.network_interface.ip_address,
             'mask': self.computer.network_interface.subnet_mask,
-            'gateway': self.computer.network_interface.default_route
+            'gateway': self.computer.network_interface.default_route,
+            'bytes_sent': self._format_bytes(self.computer.network_interface.bytes_sent),
+            'bytes_recv': self._format_bytes(self.computer.network_interface.bytes_recv)
         }
-        try:
-            val, unit = UnitByte.auto_convert(self.computer.network_interface.bytes_sent)
-            val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
-            bytes_sent = val + unit
-        except:
-            bytes_sent = '0'
-        info['bytes_sent'] = bytes_sent
-        try:
-            val, unit = UnitByte.auto_convert(self.computer.network_interface.bytes_recv)
-            val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
-            bytes_received = val + unit
-        except:
-            bytes_received = '0'
-        info['bytes_received'] = bytes_received
         return info
 
 
