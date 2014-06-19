@@ -25,7 +25,9 @@
     <dt>Boot time</dt>
     <dd>
         {{ computer['boot_time'] }}
-        <span class="label label-info" id="uptime">{{ computer['uptime'] }}</span>
+        <span class="label label-info" id="uptime" data-init-value="{{ computer['raw_uptime'] }}">
+            {{ computer['uptime'] }}
+        </span>
     </dd>
 </dl>
 <dl class="dl-horizontal">
@@ -36,4 +38,13 @@
     <dt>Total disk memory</dt>
     <dd>{{ computer['total_disk_mem'] }}</dd>
 </dl>
+{% end %}
+
+
+{% block js %}
+<!-- Plugin Scripts - jintervals -->
+<script src="{{ static_url('js/plugins/jintervals/jintervals-0.7-min.js') }}"></script>
+
+<!-- Page-Level Script -->
+<script src="{{ static_url('js/monitor/general.js') }}"></script>
 {% end %}

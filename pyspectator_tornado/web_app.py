@@ -139,6 +139,7 @@ class MonitorGeneralHandler(RequestHandler):
             'hostname': self.computer.hostname,
             'cpu_name': self.computer.processor.name,
             'boot_time': self.computer.boot_time,
+            'raw_uptime': int(self.computer.raw_uptime.total_seconds()),
             'uptime': self.computer.uptime,
             'total_mem': self._format_bytes(self.computer.virtual_memory.total),
             'total_disk_mem': self._format_bytes(total_disk_mem)
