@@ -1,23 +1,28 @@
 $(function() {
-    var uptime_updater = new UptimeUpdater('#uptime', 1000);
-    uptime_updater.init();
+
+    var uptime_updater = new UptimeUpdater({
+        label_uptime: '#uptime',
+        interval: 1000
+    });
+    uptime_updater.start_updating();
 
 });
 
-function UptimeUpdater(el, interval) {
+
+function UptimeUpdater(params) {
 
     var self = this;
 
-    this.el = $(el);
+    this.label_uptime = $(params.label_uptime);
 
-    this.interval = interval;
+    this.interval = params.interval;
 
     this.uptime = 0;
 
     this.datetime_format = '{Days?} {hh}:{mm}:{ss}';
 
-    this.init = function() {
-        self.uptime = parseInt(self.el.attr('data-init-value'));
+    this.start_updating = function() {
+        self.uptime = parseInt(self.label_uptime.attr('data-init-value'));
         setTimeout(
             function() { setInterval(self.update, self.interval); },
             self.interval
@@ -27,6 +32,6 @@ function UptimeUpdater(el, interval) {
     this.update = function() {
         self.uptime += 1;
         formatted_uptime = jintervals(self.uptime, self.datetime_format);
-        self.el.text(formatted_uptime);
+        self.label_uptime.text(formatted_uptime);
     }
 }
