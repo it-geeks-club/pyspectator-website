@@ -27,10 +27,16 @@
 </dl>
 <dl class="dl-horizontal">
     <dt>Bytes sent</dt>
-    <dd>{{ network['bytes_sent'] }}</dd>
+    <dd id="bytes_sent">{{ network['bytes_sent'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Bytes received</dt>
-    <dd>{{ network['bytes_recv'] }}</dd>
+    <dd id="bytes_recv">{{ network['bytes_recv'] }}</dd>
 </dl>
+{% end %}
+
+
+{% block js %}
+<!-- Page-Level Script -->
+<script src="{{ static_url('js/monitor/network.js') }}"></script>
 {% end %}

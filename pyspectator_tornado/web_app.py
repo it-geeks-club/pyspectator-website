@@ -2,6 +2,7 @@ import os
 import base64
 from enum import IntEnum
 from tornado.web import RequestHandler as NativeRequestHandler, Application
+from tornado.escape import json_encode
 from pyspectator.computer import Computer
 from pyspectator.convert import UnitByte
 
@@ -219,6 +220,13 @@ class MonitorNetworkHandler(RequestHandler):
             'bytes_recv': self._format_bytes(self.computer.network_interface.bytes_recv)
         }
         return info
+
+    def post(self):
+        info = {
+            'bytes_sent': self._format_bytes(self.computer.network_interface.bytes_sent),
+            'bytes_recv': self._format_bytes(self.computer.network_interface.bytes_recv)
+        }
+        self.write(json_encode(info))
 
 
 class AboutPageHandler(RequestHandler):
