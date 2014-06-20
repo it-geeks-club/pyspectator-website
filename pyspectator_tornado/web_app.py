@@ -227,14 +227,28 @@ class ApiComputerInfo(RequestHandler):
 
     def initialize(self):
         self.__supported_parameters = {
+            'processor.load':
+            lambda: 0 if self.computer.processor.load is None else self.computer.processor.load,
+
+            'processor.load_stats[]':
+            lambda: self.computer.processor.load_stats,
+
+            'virtual_memory.available':
+            lambda: self.computer.virtual_memory.available,
+
+            'virtual_memory.used_percent':
+            lambda: 0 if self.computer.virtual_memory.used_percent is None else self.computer.virtual_memory.used_percent,
+
+            'virtual_memory.used_percent_stats[]':
+            lambda: self.computer.virtual_memory.used_percent_stats,
+
+            'self.computer.nonvolatile_memory[]': self.__get_disk_info,
+
             'network_interface.bytes_sent':
             lambda: self._format_bytes(self.computer.network_interface.bytes_sent),
 
             'network_interface.bytes_recv':
             lambda: self._format_bytes(self.computer.network_interface.bytes_recv),
-
-            'processor.load':
-            lambda: 0 if self.computer.processor.load is None else self.computer.processor.load
         }
 
     def get(self, args):
@@ -247,6 +261,22 @@ class ApiComputerInfo(RequestHandler):
             else:
                 answer[param] = None
         self.write(json_encode(answer))
+
+    def __get_disk_info(self):
+        info = list()
+        for dev in self.computer.nonvolatile_memory:
+            used_percent = dev.used_percent
+            if used_percent is None:
+                used_percent = 0
+            info.append({
+                'device': dev.device,
+                'mountpoint': dev.mountpoint,
+                'fstype': dev.fstype,
+                'used': self._format_bytes(dev.used),
+                'total': self._format_bytes(dev.total),
+                'used_percent': used_percent
+            })
+        return info
 
 
 class AboutPageHandler(RequestHandler):
