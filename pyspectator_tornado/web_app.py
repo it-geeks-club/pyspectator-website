@@ -222,13 +222,6 @@ class MonitorNetworkHandler(RequestHandler):
         }
         return info
 
-    def post(self):
-        info = {
-            'bytes_sent': self._format_bytes(self.computer.network_interface.bytes_sent),
-            'bytes_recv': self._format_bytes(self.computer.network_interface.bytes_recv)
-        }
-        self.write(json_encode(info))
-
 
 class ApiComputerInfo(RequestHandler):
 

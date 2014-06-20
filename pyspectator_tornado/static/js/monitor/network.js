@@ -29,12 +29,11 @@ function NetworkInfoUpdater(params) {
 
     this.update = function() {
         $.ajax({
-            url: '/monitor/network',
-            type: 'POST',
+            url: '/api/computer_info/network_interface.bytes_sent&network_interface.bytes_recv',
             dataType: 'json',
             success: function(data) {
-                self.label_bytes_sent.text(data.bytes_sent);
-                self.label_bytes_recv.text(data.bytes_recv);
+                self.label_bytes_sent.text(data['network_interface.bytes_sent']);
+                self.label_bytes_recv.text(data['network_interface.bytes_recv']);
             }
         });
     }
