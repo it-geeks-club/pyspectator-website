@@ -25,6 +25,7 @@ class WebApplication(Application):
             (r'/monitor/memory', MonitorMemoryHandler),
             (r'/monitor/disk', MonitorDiskHandler),
             (r'/monitor/network', MonitorNetworkHandler),
+            (r'/api/computer_info/([a-zA-Z0-9_\.\&^/]+)', ApiComputerInfo),
             (r'/about', AboutPageHandler),
             (r'.*', PageNotFoundHandler),
         ]
@@ -227,6 +228,32 @@ class MonitorNetworkHandler(RequestHandler):
             'bytes_recv': self._format_bytes(self.computer.network_interface.bytes_recv)
         }
         self.write(json_encode(info))
+
+
+class ApiComputerInfo(RequestHandler):
+
+    def initialize(self):
+        self.__supported_parameters = {
+            'network_interface.bytes_sent':
+            lambda: self._format_bytes(self.computer.network_interface.bytes_sent),
+
+            'network_interface.bytes_recv':
+            lambda: self._format_bytes(self.computer.network_interface.bytes_recv),
+
+            'processor.load':
+            lambda: 0 if self.computer.processor.load is None else self.computer.processor.load
+        }
+
+    def get(self, args):
+        answer = dict()
+        params = args.split('&')
+        for param in params:
+            if param in self.__supported_parameters:
+                getter = self.__supported_parameters[param]
+                answer[param] = getter()
+            else:
+                answer[param] = None
+        self.write(json_encode(answer))
 
 
 class AboutPageHandler(RequestHandler):
