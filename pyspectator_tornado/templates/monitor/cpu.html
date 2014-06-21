@@ -15,7 +15,9 @@
 </dl>
 <dl class="dl-horizontal">
     <dt>Load</dt>
-    <dd>{{ cpu['load'] }}%</dd>
+    <dd>
+        <span id="load">{{ cpu['load'] }}</span>%
+    </dd>
 </dl>
 
 <div class="panel panel-default">
@@ -40,9 +42,6 @@
 <script src="{{ static_url('js/plugins/flot/excanvas.min.js') }}"></script>
 <![endif]-->
 <script src="{{ static_url('js/plugins/flot/jquery.flot.js') }}"></script>
-<script src="{{ static_url('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
-<script src="{{ static_url('js/plugins/flot/jquery.flot.resize.js') }}"></script>
-<script src="{{ static_url('js/plugins/flot/jquery.flot.pie.js') }}"></script>
 
 <!-- Page-Level Script -->
 <script src="{{ static_url('js/monitor/cpu.js') }}"></script>
