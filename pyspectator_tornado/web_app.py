@@ -259,7 +259,7 @@ class ApiComputerInfo(RequestHandler):
 
     def __transform_timetable(self, timetable):
         collection = list()
-        for dtime, value in timetable.items():
+        for dtime, value in sorted(timetable.items())[-100:]:
             dtime = calendar.timegm(dtime.timetuple()) * 1000
             collection.append((dtime, value))
         return collection
