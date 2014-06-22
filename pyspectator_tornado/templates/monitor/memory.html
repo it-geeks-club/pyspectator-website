@@ -7,15 +7,17 @@
 {% block content %}
 <dl class="dl-horizontal">
     <dt>Total</dt>
-    <dd>6.0GB</dd>
+    <dd>{{ memory['total'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Free</dt>
-    <dd>2.5GB</dd>
+    <dd id="available">{{ memory['available'] }}</dd>
 </dl>
 <dl class="dl-horizontal">
     <dt>Used</dt>
-    <dd>68%</dd>
+    <dd>
+        <span id="used_percent">{{ memory['used_percent'] }}</span>%
+    </dd>
 </dl>
 
 <div class="panel panel-default">
@@ -25,7 +27,7 @@
     <!-- /.panel-heading -->
     <div class="panel-body">
         <div class="flot-chart">
-            <div class="flot-chart-content" id="memory-load-chart"></div>
+            <div class="flot-chart-content" id="memory-used_percent-chart"></div>
         </div>
     </div>
     <!-- /.panel-body -->
@@ -40,7 +42,6 @@
 <script src="{{ static_url('js/plugins/flot/excanvas.min.js') }}"></script>
 <![endif]-->
 <script src="{{ static_url('js/plugins/flot/jquery.flot.min.js') }}"></script>
-<script src="{{ static_url('js/plugins/flot/jquery.flot.time.min.js') }}"></script>
 
 <!-- Page-Level Script -->
 <script src="{{ static_url('js/monitor/memory.js') }}"></script>

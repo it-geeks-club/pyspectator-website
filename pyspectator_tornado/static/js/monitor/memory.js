@@ -1,96 +1,145 @@
-
+var memory_info_updater;
 $(function() {
 
-    var container = $("#memory-load-chart");
-
-    // Determine how many data points to keep based on the placeholder's initial size;
-    // this gives us a nice high-res plot while avoiding more than one point per pixel.
-
-    var maximum = container.outerWidth() / 2 || 300;
-
-    var data = [];
-
-    function getRandomData() {
-
-        if (data.length) {
-            data = data.slice(1);
-        }
-
-        while (data.length < maximum) {
-            var previous = data.length ? data[data.length - 1] : 50;
-            var y = previous + Math.random() * 10 - 5;
-            data.push(y < 0 ? 0 : y > 100 ? 100 : y);
-        }
-
-        // zip the generated y values with the x values
-
-        var res = [];
-        for (var i = 0; i < data.length; ++i) {
-            res.push([i, data[i]])
-        }
-
-        return res;
-    }
-
-    //
-
-    series = [{
-        data: getRandomData(),
-        lines: {
-            fill: true
-        }
-    }];
-
-    //
-
-    var plot = $.plot(container, series, {
-        grid: {
-            borderWidth: 1,
-            minBorderMargin: 20,
-            labelMargin: 10,
-            backgroundColor: {
-                colors: ["#fff", "#e4f4f4"]
-            },
-            margin: {
-                top: 8,
-                bottom: 20,
-                left: 20
-            },
-            markings: function(axes) {
-                var markings = [];
-                var xaxis = axes.xaxis;
-                for (var x = Math.floor(xaxis.min); x < xaxis.max; x += xaxis.tickSize * 2) {
-                    markings.push({
-                        xaxis: {
-                            from: x,
-                            to: x + xaxis.tickSize
-                        },
-                        color: "rgba(232, 232, 255, 0.2)"
-                    });
-                }
-                return markings;
-            }
-        },
-        xaxis: {
-            tickFormatter: function() {
-                return "";
-            }
-        },
-        yaxis: {
-            min: 0,
-            max: 110
-        },
-        legend: {
-            show: true
-        }
+    memory_info_updater = new MemoryInfoUpdater({
+        label_memory_available: '#available',
+        label_memory_used_percent: '#used_percent',
+        chart_container: '#memory-used_percent-chart',
+        interval: 500
     });
-
-    // Update the random dataset at 25FPS for a smoothly-animating chart
-
-    setInterval(function updateRandom() {
-        series[0].data = getRandomData();
-        plot.setData(series);
-        plot.draw();
-    }, 40);
+    memory_info_updater.start_updating();
 
 });
+
+
+function MemoryInfoUpdater(params) {
+
+    var self = this;
+
+    this.__label_memory_available = $(params.label_memory_available);
+
+    this.__label_memory_used_percent = $(params.label_memory_used_percent);
+
+    this.__chart_container = $(params.chart_container);
+
+    this.__chart_series = [{
+        data: [],
+        lines: {
+            fill: true
+        },
+        shadowSize: 0
+    }];
+
+    this.__chart_plot = null;
+
+    this.actual_memory_available = null;
+
+    this.actual_memory_used_percent = null;
+
+    this.interval = params.interval;
+
+    this.__updating_chart_interval = params.interval * 2;
+
+    this.start_updating = function() {
+        self.__get_chart_data(function() {
+            self.__init_chart();
+            self.__draw_chart();
+            self.__start_updating_chart();
+        });
+        setTimeout(
+            function() { setInterval(self.__update, self.interval); },
+            self.interval
+        );
+    }
+
+    this.__start_updating_chart = function() {
+        self.__add_chart_value(self.actual_memory_used_percent);
+        self.__draw_chart();
+        setTimeout(self.__start_updating_chart, self.__updating_chart_interval);
+    }
+
+    this.__update = function() {
+        $.get(
+            '/api/computer_info/virtual_memory.available&virtual_memory.used_percent',
+            function(data) {
+                var memory_available = data['virtual_memory.available'];
+                if((memory_available !== null) && (self.actual_memory_available !== memory_available)) {
+                    self.actual_memory_available = memory_available;
+                    self.__label_memory_available.text(memory_available);
+                }
+                var memory_used_percent = data['virtual_memory.used_percent'];
+                if((memory_used_percent !== null) && (self.actual_memory_used_percent !== memory_used_percent)) {
+                    self.actual_memory_used_percent = memory_used_percent;
+                    self.__label_memory_used_percent.text(memory_used_percent);
+                }
+            },
+            'json'
+        );
+    }
+
+    this.__get_chart_data = function(callback) {
+        $.get(
+            '/api/computer_info/virtual_memory.used_percent_stats[]',
+            function(data) {
+                self.__chart_series[0].data = data['virtual_memory.used_percent_stats[]'];
+                if(callback) {
+                    callback();
+                }
+            },
+            'json'
+        );
+    }
+
+    this.__init_chart = function() {
+        self.__chart_plot = $.plot(self.__chart_container, self.__chart_series, {
+            grid: {
+                borderWidth: 1,
+                minBorderMargin: 20,
+                labelMargin: 10,
+                backgroundColor: {
+                    colors: ["#fff", "#e4f4f4"]
+                },
+                margin: {
+                    top: 8,
+                    bottom: 20,
+                    left: 20
+                }
+            },
+            xaxis: {
+                show: false
+            },
+            yaxis: {
+                min: 0,
+                max: 110
+            },
+            legend: {
+                show: false
+            }
+        });
+    }
+
+    this.__add_chart_value = function(new_value) {
+        if(new_value === null) {
+            return null;
+        }
+        var len = self.__chart_series[0].data.length;
+        if(len >= 100) {
+            self.__chart_series[0].data.shift();
+            len -= 1;
+        }
+        var new_data = [];
+        for(var i=0; i<len; i++) {
+            new_data.push([
+                i, self.__chart_series[0].data[i][1]
+            ]);
+        }
+        new_data.push([len, new_value]);
+        self.__chart_series[0].data = new_data;
+    }
+
+    this.__draw_chart = function() {
+        self.__chart_plot.setData(self.__chart_series);
+        self.__chart_plot.draw();
+    }
+
+}
