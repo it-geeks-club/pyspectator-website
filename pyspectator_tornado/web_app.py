@@ -170,7 +170,7 @@ class MonitorCpuHandler(RequestHandler):
 class MonitorMemoryHandler(RequestHandler):
 
     def get(self):
-        self.render('monitor/memory.html')
+        self.render('monitor/memory.html', memory=self.__get_memory_info())
 
     def __get_memory_info(self):
         used_percent = self.computer.virtual_memory.used_percent
@@ -258,10 +258,9 @@ class ApiComputerInfo(RequestHandler):
         self.write(json_encode(answer))
 
     def __transform_timetable(self, timetable):
-        collection = list()
-        for dtime, value in timetable.newest_items(100):
-            dtime = calendar.timegm(dtime.timetuple()) * 1000
-            collection.append((dtime, value))
+        values = list(timetable.newest_values(100))
+        keys = range(len(values))
+        collection = list(zip(keys, values))
         return collection
 
     def __get_processor_load_stats(self):

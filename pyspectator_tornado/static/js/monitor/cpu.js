@@ -3,7 +3,7 @@ $(function() {
     var cpu_info_updater = new CpuInfoUpdater({
         label_load: '#load',
         chart_container: '#cpu-load-chart',
-        interval: 50
+        interval: 500
     });
     cpu_info_updater.start_updating();
 
@@ -32,15 +32,24 @@ function CpuInfoUpdater(params) {
 
     this.interval = params.interval;
 
+    this.__updating_chart_interval = params.interval * 2;
+
     this.start_updating = function() {
         self.__get_chart_data(function() {
             self.__init_chart();
             self.__draw_chart();
+            self.__start_updating_chart();
         });
         setTimeout(
             function() { setInterval(self.__update, self.interval); },
             self.interval
         );
+    }
+
+    this.__start_updating_chart = function() {
+        self.__add_chart_value(self.actual_load);
+        self.__draw_chart();
+        setTimeout(self.__start_updating_chart, self.__updating_chart_interval);
     }
 
     this.__update = function() {
@@ -52,13 +61,6 @@ function CpuInfoUpdater(params) {
                     self.actual_load = cpu_load;
                     self.__label_load.text(cpu_load);
                 }
-                if(self.__chart_series[0].data.length >= 100) {
-                    self.__chart_series[0].data.shift();
-                }
-                var now = new Date();
-                now = now.getTime() - now.getTimezoneOffset() * 60000;
-                self.__chart_series[0].data.push([now, cpu_load]);
-                self.__draw_chart();
             },
             'json'
         );
@@ -90,24 +92,10 @@ function CpuInfoUpdater(params) {
                     top: 8,
                     bottom: 20,
                     left: 20
-                },
-                markings: function(axes) {
-                    var markings = [];
-                    var xaxis = axes.xaxis;
-                    for (var x = Math.floor(xaxis.min); x < xaxis.max; x += xaxis.tickSize * 2) {
-                        markings.push({
-                            xaxis: {
-                                from: x,
-                                to: x + xaxis.tickSize
-                            },
-                            color: "rgba(232, 232, 255, 0.2)"
-                        });
-                    }
-                    return markings;
                 }
             },
             xaxis: {
-                mode: "time",
+                //mode: "time",
                 show: false
             },
             yaxis: {
@@ -115,14 +103,32 @@ function CpuInfoUpdater(params) {
                 max: 110
             },
             legend: {
-                show: true
+                show: false
             }
         });
     }
 
+    this.__add_chart_value = function(new_value) {
+        if(new_value === null) {
+            return null;
+        }
+        var len = self.__chart_series[0].data.length;
+        if(len >= 100) {
+            self.__chart_series[0].data.shift();
+            len -= 1;
+        }
+        var new_data = [];
+        for(var i=0; i<len; i++) {
+            new_data.push([
+                i, self.__chart_series[0].data[i][1]
+            ]);
+        }
+        new_data.push([len, new_value]);
+        self.__chart_series[0].data = new_data;
+    }
+
     this.__draw_chart = function() {
         self.__chart_plot.setData(self.__chart_series);
-        self.__chart_plot.setupGrid();
         self.__chart_plot.draw();
     }
 
