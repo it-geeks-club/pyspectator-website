@@ -3,7 +3,7 @@ $(function() {
     var cpu_info_updater = new CpuInfoUpdater({
         label_load: '#load',
         chart_container: '#cpu-load-chart',
-        interval: 100
+        interval: 50
     });
     cpu_info_updater.start_updating();
 
