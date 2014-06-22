@@ -57,7 +57,7 @@ function CpuInfoUpdater(params) {
             '/api/computer_info/processor.load',
             function(data) {
                 var cpu_load = data['processor.load'];
-                if(self.actual_load !== cpu_load) {
+                if((cpu_load !== null) && (self.actual_load !== cpu_load)) {
                     self.actual_load = cpu_load;
                     self.__label_load.text(cpu_load);
                 }
@@ -95,7 +95,6 @@ function CpuInfoUpdater(params) {
                 }
             },
             xaxis: {
-                //mode: "time",
                 show: false
             },
             yaxis: {
