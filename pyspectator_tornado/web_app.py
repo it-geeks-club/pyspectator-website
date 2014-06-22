@@ -232,7 +232,7 @@ class ApiComputerInfo(RequestHandler):
 
             'processor.load_stats[]': self.__get_processor_load_stats,
 
-            'virtual_memory.available': lambda: self.computer.virtual_memory.available,
+            'virtual_memory.available': lambda: self._format_bytes(self.computer.virtual_memory.available),
 
             'virtual_memory.used_percent':
             lambda: 0 if self.computer.virtual_memory.used_percent is None else self.computer.virtual_memory.used_percent,
