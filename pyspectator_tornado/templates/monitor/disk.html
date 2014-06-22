@@ -13,7 +13,9 @@
                     {% if (dev['mountpoint'] is not None) and (dev['mountpoint'] != dev['device']) %}
                         (mounted as "{{ dev['mountpoint'] }}")
                     {% end %}
-                    in the {{ dev['fstype'] }} file system
+                    {% if dev['fstype'] is not None %}
+                        in the {{ dev['fstype'] }} file system
+                    {% end %}
                 </div>
                 <div class="col-sm-3 col-md-3 col-lg-3 text-right">
                     <span class="label label-info">
