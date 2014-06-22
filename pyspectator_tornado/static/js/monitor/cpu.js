@@ -1,7 +1,6 @@
-var cpu_info_updater = null;
 $(function() {
 
-    cpu_info_updater = new CpuInfoUpdater({
+    var cpu_info_updater = new CpuInfoUpdater({
         label_load: '#load',
         chart_container: '#cpu-load-chart',
         interval: 100
