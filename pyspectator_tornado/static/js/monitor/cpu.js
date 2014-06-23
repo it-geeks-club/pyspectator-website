@@ -49,9 +49,9 @@ function CpuInfoUpdater(params) {
     }
 
     this.__start_updating_chart = function() {
-        //self.__add_chart_value(self.actual_load);
-        //self.__draw_chart();
-        //setTimeout(self.__start_updating_chart, self.__updating_chart_interval);
+        self.__add_chart_value(self.actual_load);
+        self.__draw_chart();
+        setTimeout(self.__start_updating_chart, self.__updating_chart_interval);
     }
 
     this.__update = function() {
