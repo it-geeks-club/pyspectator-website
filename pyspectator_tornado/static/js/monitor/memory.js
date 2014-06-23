@@ -1,7 +1,6 @@
-var memory_info_updater;
 $(function() {
 
-    memory_info_updater = new MemoryInfoUpdater({
+    var memory_info_updater = new MemoryInfoUpdater({
         label_memory_available: '#available',
         label_memory_used_percent: '#used_percent',
         chart_container: '#memory-used_percent-chart',
@@ -29,6 +28,8 @@ function MemoryInfoUpdater(params) {
         },
         shadowSize: 0
     }];
+
+    this.__chart_data_size = 100;
 
     this.__chart_plot = null;
 
@@ -81,7 +82,19 @@ function MemoryInfoUpdater(params) {
         $.get(
             '/api/computer_info/virtual_memory.used_percent_stats[]',
             function(data) {
-                self.__chart_series[0].data = data['virtual_memory.used_percent_stats[]'];
+                var chart_data = data['virtual_memory.used_percent_stats[]'];
+                if(chart_data.length < self.__chart_data_size) {
+                    var filled_data = [];
+                    for(var i=0; i<self.__chart_data_size-chart_data.length; i++) {
+                        filled_data.push([i, -1]);
+                    }
+                    for(var i=0, key=filled_data.length; i<chart_data.length; i++, key++) {
+                        var val = chart_data[i][1];
+                        filled_data.push([key, val]);
+                    }
+                    chart_data = filled_data;
+                }
+                self.__chart_series[0].data = chart_data;
                 if(callback) {
                     callback();
                 }
@@ -122,18 +135,13 @@ function MemoryInfoUpdater(params) {
         if(new_value === null) {
             return null;
         }
-        var len = self.__chart_series[0].data.length;
-        if(len >= 100) {
-            self.__chart_series[0].data.shift();
-            len -= 1;
-        }
         var new_data = [];
-        for(var i=0; i<len; i++) {
+        for(var i=1; i<self.__chart_data_size; i++) {
             new_data.push([
-                i, self.__chart_series[0].data[i][1]
+                i - 1, self.__chart_series[0].data[i][1]
             ]);
         }
-        new_data.push([len, new_value]);
+        new_data.push([self.__chart_data_size - 1, new_value]);
         self.__chart_series[0].data = new_data;
     }
 

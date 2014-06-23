@@ -49,9 +49,9 @@ function CpuInfoUpdater(params) {
     }
 
     this.__start_updating_chart = function() {
-        self.__add_chart_value(self.actual_load);
-        self.__draw_chart();
-        setTimeout(self.__start_updating_chart, self.__updating_chart_interval);
+        //self.__add_chart_value(self.actual_load);
+        //self.__draw_chart();
+        //setTimeout(self.__start_updating_chart, self.__updating_chart_interval);
     }
 
     this.__update = function() {
@@ -78,8 +78,7 @@ function CpuInfoUpdater(params) {
                     for(var i=0; i<self.__chart_data_size-chart_data.length; i++) {
                         filled_data.push([i, -1]);
                     }
-                    for(var i=0; i<chart_data.length; i++) {
-                        var key = filled_data.length + 1;
+                    for(var i=0, key=filled_data.length; i<chart_data.length; i++, key++) {
                         var val = chart_data[i][1];
                         filled_data.push([key, val]);
                     }
