@@ -5,35 +5,49 @@
 
 
 {% block content %}
+<div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-12" data-block-name="disk_devices">
     {% for dev in devices %}
-        <div class="row" data-device-name="{{ dev['device'] }}">
-            <div class="row">
+        <div data-device-name="{{ dev['device'] }}" class="row">
+            <div data-block-name="common_disk_info" class="row">
                 <div class="col-sm-9 col-md-9 col-lg-9">
-                    <b>{{ dev['device'] }}</b>
-                    {% if (dev['mountpoint'] is not None) and (dev['mountpoint'] != dev['device']) %}
-                        (mounted as "{{ dev['mountpoint'] }}")
-                    {% end %}
-                    {% if dev['fstype'] %}
-                        in the {{ dev['fstype'] }} file system
-                    {% end %}
+                    <b data-value-name="device">{{ dev['device'] }}</b>
+                    <span data-value-name="mountpoint">
+                        {% if (dev['mountpoint'] is not None) and (dev['mountpoint'] != dev['device']) %}
+                            (mounted as "{{ dev['mountpoint'] }}")
+                        {% end %}
+                    </span>
+                    <span data-value-name="fstype">
+                        {% if dev['fstype'] %}
+                            in the {{ dev['fstype'] }} file system
+                        {% end %}
+                    </span>
                 </div>
                 <div class="col-sm-3 col-md-3 col-lg-3 text-right">
                     <span class="label label-info">
-                        {{ dev['used'] }} / {{ dev['total'] }}
+                        <span data-value-name="used">{{ dev['used'] }}</span>
+                        /
+                        <span data-value-name="total">{{ dev['total'] }}</span>
                     </span>
                 </div>
             </div>
-            <div class="row" style="margin-top: 2px;">
+            <div data-block-name="used_disk_info" class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12">
                     <div class="progress progress-striped active">
                         {% if dev['used_percent'] <= 50 %}
-                            <div class="progress-bar progress-bar-success" style="width: {{ dev['used_percent'] }}%">
+                            <div class="progress-bar progress-bar-success"
+                                 style="width: {{ dev['used_percent'] }}%"
+                                 data-value-name="used_percent">
                             </div>
                         {% elif dev['used_percent'] <= 75 %}
-                            <div class="progress-bar progress-bar-warning" style="width: {{ dev['used_percent'] }}%">
+                            <div class="progress-bar progress-bar-warning"
+                                 style="width: {{ dev['used_percent'] }}%"
+                                 data-value-name="used_percent">
                             </div>
                         {% else %}
-                            <div class="progress-bar progress-bar-danger" style="width: {{ dev['used_percent'] }}%">
+                            <div class="progress-bar progress-bar-danger"
+                                 style="width: {{ dev['used_percent'] }}%"
+                                 data-value-name="used_percent">
                             </div>
                         {% end %}
                     </div>
@@ -42,4 +56,12 @@
         </div>
         <hr>
     {% end %}
+    </div>
+</div>
+{% end %}
+
+
+{% block js %}
+<!-- Page-Level Script -->
+<script src="{{ static_url('js/monitor/disk.js') }}"></script>
 {% end %}
