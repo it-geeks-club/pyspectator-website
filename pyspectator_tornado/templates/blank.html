@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        {% block title %}Blank page{% end %} - pyspectator Demo
+        {% block title %}Blank page{% end %} - pyspectator_tornado
     </title>
 
     <!-- Fake favicon -->
@@ -33,6 +33,7 @@
     {% block body %}{% end %}
 
     <!-- Core Scripts -->
+    <script src="{{ static_url('js/lib.js') }}"></script>
     <script src="{{ static_url('js/jquery-1.11.1.min.js') }}"></script>
     <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
     <script src="{{ static_url('js/plugins/metisMenu/jquery.metisMenu.js') }}"></script>

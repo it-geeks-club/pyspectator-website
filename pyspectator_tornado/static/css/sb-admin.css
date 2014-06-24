@@ -1,7 +1,5 @@
 /* Global Styles */
 
-/* ------------------------------- */
-
 body {
     padding-top: 100px;
     background-color: #f8f8f8;
@@ -14,8 +12,6 @@ body {
 }
 
 /* Wrappers */
-
-/* ------------------------------- */
 
 #wrapper {
     width: 100%;
@@ -38,8 +34,6 @@ body {
 }
 
 /* Navigation */
-
-/* ------------------------------- */
 
 /* Top Right Navigation Dropdown Styles */
 
@@ -95,6 +89,11 @@ body {
 .navbar-top-links .dropdown-user {
     right: 0;
     left: auto;
+}
+
+.navbar-brand img {
+    width: 1em;
+    height: 1em;
 }
 
 /* Sidebar Menu Styles */
@@ -162,8 +161,6 @@ body {
 }
 
 /* Buttons */
-
-/* ------------------------------- */
 
 .btn-outline {
     color: inherit;
@@ -279,4 +276,10 @@ table.dataTable thead .sorting:after {
 
 .show-grid {
     margin: 15px 0;
+}
+
+/* Page: "/monitor/disk" */
+
+[data-block-name="used_disk_info"] {
+    margin-top: 2px;
 }
