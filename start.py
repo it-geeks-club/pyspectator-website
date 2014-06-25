@@ -15,7 +15,7 @@ def main():
         'address',
         default=None,
         help='domain name for monitoring system',
-        type=int
+        type=str
     )
     define(
         'port',
