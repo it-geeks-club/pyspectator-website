@@ -3,7 +3,7 @@ Summary
 ==================
 
 pyspectator_tornado is a web-monitoring tool ported on Tornado with pyspectator as a main monitoring module.
-It's able collect and display general information about workstation, cpu, memory, disk devices and network.
+It's able to collect and display general information about workstation, cpu, memory, disk devices and network.
 
 
 ==================
