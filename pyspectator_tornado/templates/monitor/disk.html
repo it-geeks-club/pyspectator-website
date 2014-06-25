@@ -8,7 +8,7 @@
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-12" data-block-name="disk_devices">
     {% for dev in devices %}
-        <div data-device-name="{{ dev['device'] }}" class="row">
+        <div data-block-name ="device" data-device-name="{{ dev['device'] }}" class="row">
             <div data-block-name="common_disk_info" class="row">
                 <div class="col-sm-9 col-md-9 col-lg-9">
                     <b data-value-name="device">{{ dev['device'] }}</b>

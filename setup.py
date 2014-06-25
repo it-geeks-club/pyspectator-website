@@ -15,7 +15,7 @@ def main():
     # Describe installer
     setup(
         name='pyspectator_tornado',
-        version='1.0.0',
+        version='1.0.1',
         author='Maxim Grischuk',
         author_email='uzumaxy@gmail.com',
         maintainer='Maxim Grischuk',
@@ -28,7 +28,7 @@ def main():
         description='''pyspectator_tornado is a web-monitoring tool ported on
                        Tornado with pyspectator as a main monitoring module.''',
         long_description=open('README.rst').read(),
-        install_requires=['pyspectator >= 1.0.6', 'tornado >= 3.2.0'],
+        install_requires=['pyspectator >= 1.0.7', 'tornado >= 3.2.0'],
         keywords=[
             'example',
             'pyspectator', 'spectator', 'pyspectator_tornado',

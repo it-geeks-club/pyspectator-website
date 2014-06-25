@@ -15,13 +15,33 @@ function DiskDevInfoUpdater(params) {
 
     this.interval = params.interval;
 
-    this.actual_devices = [];
+    this.actual_devices = null;
 
     this.start_updating = function() {
+        self.__init();
         setTimeout(
             function() { setInterval(self.__update, self.interval); },
             self.interval
         );
+    }
+
+    this.__init = function() {
+        delete self.actual_devices;
+        self.actual_devices = [];
+        self.container.find('[data-block-name ="device"]').each(function() {
+            var html_block = $(this);
+            var new_device = new DiskDevInfo({
+                device: html_block.attr('data-device-name').trim(),
+                mountpoint: html_block.find('[data-value-name="mountpoint"]').text().trim(),
+                fstype: html_block.find('[data-value-name="fstype"]').text().trim(),
+                used: html_block.find('[data-value-name="used"]').text().trim(),
+                total: html_block.find('[data-value-name="total"]').text().trim(),
+                used_percent: parseInt(
+                    html_block.find('[data-value-name="used_percent"]').css('width').replace('%', '').trim()
+                )
+            });
+            self.actual_devices.push(new_device);
+        });
     }
 
     this.__update = function() {
@@ -161,7 +181,10 @@ function DiskDevInfo(params) {
 
     this.create_html = function() {
         // Main HTML block
-        var html_block = $('<div></div>').attr('data-device-name', self.device).addClass('row');
+        var html_block = $('<div></div>')
+            .attr('data-block-name', 'device')
+            .attr('data-device-name', self.device)
+            .addClass('row');
         // Temporary DOM element
         var temp_el = null;
         // Common information
