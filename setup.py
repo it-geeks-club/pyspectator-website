@@ -15,7 +15,7 @@ def main():
     # Describe installer
     setup(
         name='pyspectator_tornado',
-        version='1.0.3',
+        version='1.0.4',
         author='Maxim Grischuk',
         author_email='uzumaxy@gmail.com',
         maintainer='Maxim Grischuk',
