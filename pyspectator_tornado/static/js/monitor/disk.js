@@ -63,7 +63,7 @@ function DiskDevInfoUpdater(params) {
 
     this.__check_for_old = function(devices) {
         var old_devices = [];
-        for(var i=0; i<self.actual_devices; i++) {
+        for(var i=0; i<self.actual_devices.length; i++) {
             var is_old = true;
             for(var j=0; j<devices.length; j++) {
                 if(self.actual_devices[i].device === devices[j].device) {
@@ -72,7 +72,7 @@ function DiskDevInfoUpdater(params) {
                 }
             }
             if(is_old) {
-                old_devices.append(i);
+                old_devices.push(i);
             }
         }
         $.each(old_devices, function() {
