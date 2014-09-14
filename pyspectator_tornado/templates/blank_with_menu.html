@@ -12,7 +12,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="#">
-                <img src="{{ static_url('img/favicon.png') }}"> pyspectator_tornado
+                <img src="{{ static_url('img/favicon.png') }}">pyspectator_tornado
             </a>
         </div>
         <!-- /.navbar-header -->
@@ -20,13 +20,20 @@
         <ul class="nav navbar-top-links navbar-right">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    <i class="fa fa-user fa-fw"></i>
+                    <i class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li><a href="/user/profile/username"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                    <li>
+                        <a href="/user/profile/username">
+                            <i class="fa fa-user fa-fw"></i> User Profile
+                        </a>
                     </li>
                     <li class="divider"></li>
-                    <li><a href="/auth/login"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                    <li>
+                        <a href="/auth/login">
+                            <i class="fa fa-sign-out fa-fw"></i> Logout
+                        </a>
                     </li>
                 </ul>
                 <!-- /.dropdown-user -->
@@ -39,22 +46,34 @@
             <div class="sidebar-collapse">
                 <ul class="nav" id="side-menu">
                     <li>
-                        <a href="/monitor/general"><i class="fa fa-desktop fa-fw"></i> General</a>
+                        <a href="/monitor/general">
+                            <i class="fa fa-desktop fa-fw"></i> General
+                        </a>
                     </li>
                     <li>
-                        <a href="/monitor/cpu"><i class="fa fa-tachometer fa-fw"></i> CPU</a>
+                        <a href="/monitor/cpu">
+                            <i class="fa fa-tachometer fa-fw"></i> CPU
+                        </a>
                     </li>
                     <li>
-                        <a href="/monitor/memory"><i class="fa fa-bar-chart-o fa-fw"></i> Memory</a>
+                        <a href="/monitor/memory">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Memory
+                        </a>
                     </li>
                     <li>
-                        <a href="/monitor/disk"><i class="fa fa-inbox fa-fw"></i> Disk</a>
+                        <a href="/monitor/disk">
+                            <i class="fa fa-inbox fa-fw"></i> Disk
+                        </a>
                     </li>
                     <li>
-                        <a href="/monitor/network"><i class="fa fa-sitemap fa-fw"></i> Network</a>
+                        <a href="/monitor/network">
+                            <i class="fa fa-sitemap fa-fw"></i> Network
+                        </a>
                     </li>
                     <li>
-                        <a href="/about"><i class="fa fa-info-circle fa-fw"></i> About</a>
+                        <a href="/about">
+                            <i class="fa fa-info-circle fa-fw"></i> About
+                        </a>
                     </li>
                 </ul>
                 <!-- /#side-menu -->

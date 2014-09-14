@@ -10,7 +10,9 @@ except ImportError:
 def main():
     # Check python version
     if sys.version_info < (3, 0, 0):
-        sys.stderr.write('You need python 3.0 or later to run this script!' + os.linesep)
+        sys.stderr.write(
+            'You need python 3.0 or later to run this script!' + os.linesep
+        )
         exit(1)
     # Describe installer
     setup(
@@ -23,10 +25,9 @@ def main():
         packages=['pyspectator_tornado'],
         url='https://github.com/uzumaxy/pyspectator_tornado',
         download_url='https://github.com/uzumaxy/pyspectator_tornado/releases',
-        bugtrack_url='https://github.com/uzumaxy/pyspectator_tornado/issues',
         license='BSD',
-        description='''pyspectator_tornado is a web-monitoring tool ported on
-                       Tornado with pyspectator as a main monitoring module.''',
+        description='pyspectator_tornado is a web-monitoring tool ported on'
+                    'Tornado with pyspectator as a main monitoring module.',
         long_description=open('README.rst').read(),
         install_requires=['pyspectator >= 1.0.8', 'tornado >= 3.2.0'],
         keywords=[

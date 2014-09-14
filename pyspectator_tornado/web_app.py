@@ -1,7 +1,6 @@
 import os
 import base64
 from enum import IntEnum
-import calendar
 from tornado.web import RequestHandler as NativeRequestHandler, Application
 from tornado.escape import json_encode
 from pyspectator.computer import Computer
@@ -32,23 +31,28 @@ class WebApplication(Application):
         ]
         default_port = 8888
         settings = {
-            # Front-end templates dir
-            'template_path': os.path.join(os.path.dirname(__file__), 'templates'),
+            # Path to templates
+            'template_path': os.path.join(
+                os.path.dirname(__file__), 'templates'
+            ),
             # Path to shared files
             'static_path': os.path.join(os.path.dirname(__file__), 'static'),
             # Users authorization page
             'login_url': '/auth/login',
             # Salt for encrypt secure cookies
             'cookie_secret': base64.b64encode(
-                '42: Answer to the Ultimate Question of Life, the Universe, and Everything'.encode()
+                '42: Answer to the Ultimate Question of Life, '
+                'the Universe, and Everything'.encode()
             ),
-            # The app will watch for changes to its source files and reload itself if some file will changed
+            # The app will watch for changes in source files and
+            # reload itself if some file will changed
             'autoreload': True,
             # Templates will not be cached
             'compiled_template_cache': False,
-            # Static file hashes will not be cached
+            # Static file will be not cached
             'static_hash_cache': False,
-            # When raises some Exception will be generated an error page including a stack trace
+            # When raises some Exception will be generated an error page
+            # with stack trace
             'serve_traceback': True,
             # Disable cross-site request forgery protection
             'xsrf_cookies': False
@@ -58,14 +62,15 @@ class WebApplication(Application):
             settings.update({
                 # Templates will be cached
                 'compiled_template_cache': True,
-                # Static file hashes will be cached
+                # Static file will be cached
                 'static_hash_cache': True,
-                # Don't show error page with stack trace when raises some Exception
+                # Don't show error page with stack trace
+                # when raises some Exception
                 'serve_traceback': False,
                 # The app don't will watch for changes in its source files
                 'autoreload': False,
                 # Enable cross-site request forgery protection
-                #'xsrf_cookies': True
+                # 'xsrf_cookies': True
             })
         self.port = default_port if port is None else port
         self.computer = Computer()
@@ -100,8 +105,8 @@ class RequestHandler(NativeRequestHandler):
                 byte_value = '0'
             elif isinstance(byte_value, (int, float)):
                 val, unit = UnitByte.auto_convert(byte_value)
-                val, unit = '{0:.2f}'.format(val), UnitByte.get_name_reduction(unit)
-                byte_value = val + unit
+                byte_value = '{:.2f}'.format(val) + \
+                             UnitByte.get_name_reduction(unit)
         finally:
             return byte_value
 
@@ -144,7 +149,9 @@ class MonitorGeneralHandler(RequestHandler):
             'boot_time': self.computer.boot_time,
             'raw_uptime': int(self.computer.raw_uptime.total_seconds()),
             'uptime': self.computer.uptime,
-            'total_mem': self._format_bytes(self.computer.virtual_memory.total),
+            'total_mem': self._format_bytes(
+                self.computer.virtual_memory.total
+            ),
             'total_disk_mem': self._format_bytes(total_disk_mem)
         }
         return info
@@ -178,7 +185,9 @@ class MonitorMemoryHandler(RequestHandler):
             used_percent = 0
         info = {
             'total': self._format_bytes(self.computer.virtual_memory.total),
-            'available': self._format_bytes(self.computer.virtual_memory.available),
+            'available': self._format_bytes(
+                self.computer.virtual_memory.available
+            ),
             'used_percent': used_percent
         }
         return info
@@ -218,8 +227,12 @@ class MonitorNetworkHandler(RequestHandler):
             'ip_address': self.computer.network_interface.ip_address,
             'mask': self.computer.network_interface.subnet_mask,
             'gateway': self.computer.network_interface.default_route,
-            'bytes_sent': self._format_bytes(self.computer.network_interface.bytes_sent),
-            'bytes_recv': self._format_bytes(self.computer.network_interface.bytes_recv)
+            'bytes_sent': self._format_bytes(
+                self.computer.network_interface.bytes_sent
+            ),
+            'bytes_recv': self._format_bytes(
+                self.computer.network_interface.bytes_recv
+            )
         }
         return info
 
@@ -268,7 +281,9 @@ class ApiComputerInfo(RequestHandler):
         return stats
 
     def __get_virtual_memory_used_percent_stats(self):
-        stats = self.__transform_timetable(self.computer.virtual_memory.used_percent_stats)
+        stats = self.__transform_timetable(
+            self.computer.virtual_memory.used_percent_stats
+        )
         return stats
 
     def __get_disk_info(self):
