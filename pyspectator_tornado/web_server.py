@@ -18,7 +18,7 @@ class WebServer(object):
 
     def __on_shutdown(self):
         # Stop pyspectator
-        self.web_app.computer.stop_monitoring()
+        self.web_app.comp_info.stop_monitoring()
         # Stop event loop
         self.__io_loop.stop()
 
@@ -54,6 +54,6 @@ class WebServer(object):
             lambda sig, frame: self.__io_loop.add_callback_from_signal(self.__on_shutdown)
         )
         # Start pyspectator
-        self.web_app.computer.start_monitoring()
+        self.web_app.comp_info.start_monitoring()
         # Start event loop
         self.__io_loop.start()

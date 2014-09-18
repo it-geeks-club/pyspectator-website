@@ -73,15 +73,31 @@ class WebApplication(Application):
                 # 'xsrf_cookies': True
             })
         self.port = default_port if port is None else port
-        self.computer = Computer()
+        self.comp_info = Computer()
         super().__init__(handlers, **settings)
 
 
 class RequestHandler(NativeRequestHandler):
 
     @property
-    def computer(self):
-        return self.application.computer
+    def comp_info(self):
+        return self.application.comp_info
+
+    @property
+    def cpu_info(self):
+        return self.comp_info.processor
+
+    @property
+    def mem_info(self):
+        return self.comp_info.virtual_memory
+
+    @property
+    def disk_info(self):
+        return self.comp_info.nonvolatile_memory
+
+    @property
+    def nif(self):
+        return self.comp_info.network_interface
 
     def get_current_user(self):
         return None
@@ -137,21 +153,19 @@ class MonitorGeneralHandler(RequestHandler):
     def __get_general_info(self):
         # Calculate total disk memory
         total_disk_mem = 0
-        for dev in self.computer.nonvolatile_memory:
+        for dev in self.disk_info:
             if isinstance(dev.total, (int, float)):
                 total_disk_mem += dev.total
         # General information
         info = {
-            'os': self.computer.os,
-            'architecture': self.computer.architecture,
-            'hostname': self.computer.hostname,
-            'cpu_name': self.computer.processor.name,
-            'boot_time': self.computer.boot_time,
-            'raw_uptime': int(self.computer.raw_uptime.total_seconds()),
-            'uptime': self.computer.uptime,
-            'total_mem': self._format_bytes(
-                self.computer.virtual_memory.total
-            ),
+            'os': self.comp_info.os,
+            'architecture': self.comp_info.architecture,
+            'hostname': self.comp_info.hostname,
+            'cpu_name': self.cpu_info.name,
+            'boot_time': self.comp_info.boot_time,
+            'raw_uptime': int(self.comp_info.raw_uptime.total_seconds()),
+            'uptime': self.comp_info.uptime,
+            'total_mem': self._format_bytes(self.mem_info.total),
             'total_disk_mem': self._format_bytes(total_disk_mem)
         }
         return info
@@ -163,13 +177,10 @@ class MonitorCpuHandler(RequestHandler):
         self.render('monitor/cpu.html', cpu=self.__get_cpu_info())
 
     def __get_cpu_info(self):
-        cpu_load = self.computer.processor.load
-        if cpu_load is None:
-            cpu_load = 0
         info = {
-            'name': self.computer.processor.name,
-            'count': self.computer.processor.count,
-            'load': cpu_load
+            'name': self.cpu_info.name,
+            'count': self.cpu_info.count,
+            'load': self.cpu_info.load if self.cpu_info.load else 0
         }
         return info
 
@@ -180,14 +191,13 @@ class MonitorMemoryHandler(RequestHandler):
         self.render('monitor/memory.html', memory=self.__get_memory_info())
 
     def __get_memory_info(self):
-        used_percent = self.computer.virtual_memory.used_percent
-        if used_percent is None:
+        if self.mem_info.used_percent is None:
             used_percent = 0
+        else:
+            used_percent = self.mem_info.used_percent
         info = {
-            'total': self._format_bytes(self.computer.virtual_memory.total),
-            'available': self._format_bytes(
-                self.computer.virtual_memory.available
-            ),
+            'total': self._format_bytes(self.mem_info.total),
+            'available': self._format_bytes(self.mem_info.available),
             'used_percent': used_percent
         }
         return info
@@ -200,10 +210,11 @@ class MonitorDiskHandler(RequestHandler):
 
     def __get_disk_info(self):
         info = list()
-        for dev in self.computer.nonvolatile_memory:
-            used_percent = dev.used_percent
-            if used_percent is None:
+        for dev in self.disk_info:
+            if dev.used_percent is None:
                 used_percent = 0
+            else:
+                used_percent = dev.used_percent
             info.append({
                 'device': dev.device,
                 'mountpoint': dev.mountpoint,
@@ -222,17 +233,13 @@ class MonitorNetworkHandler(RequestHandler):
 
     def __get_network_info(self):
         info = {
-            'hostname': self.computer.hostname,
-            'mac_address': self.computer.network_interface.hardware_address,
-            'ip_address': self.computer.network_interface.ip_address,
-            'mask': self.computer.network_interface.subnet_mask,
-            'gateway': self.computer.network_interface.default_route,
-            'bytes_sent': self._format_bytes(
-                self.computer.network_interface.bytes_sent
-            ),
-            'bytes_recv': self._format_bytes(
-                self.computer.network_interface.bytes_recv
-            )
+            'hostname': self.comp_info.hostname,
+            'mac_address': self.nif.hardware_address,
+            'ip_address': self.nif.ip_address,
+            'mask': self.nif.subnet_mask,
+            'gateway': self.nif.default_route,
+            'bytes_sent': self._format_bytes(self.nif.bytes_sent),
+            'bytes_recv': self._format_bytes(self.nif.bytes_recv)
         }
         return info
 
@@ -241,22 +248,22 @@ class ApiComputerInfo(RequestHandler):
 
     def initialize(self):
         self.__supported_parameters = {
-            'processor.load': lambda: 0 if self.computer.processor.load is None else self.computer.processor.load,
+            'processor.load': lambda: 0 if self.cpu_info.load is None else self.cpu_info.load,
 
             'processor.load_stats[]': lambda: self.__get_processor_load_stats(),
 
-            'virtual_memory.available': lambda: self._format_bytes(self.computer.virtual_memory.available),
+            'virtual_memory.available': lambda: self._format_bytes(self.mem_info.available),
 
             'virtual_memory.used_percent':
-            lambda: 0 if self.computer.virtual_memory.used_percent is None else self.computer.virtual_memory.used_percent,
+            lambda: 0 if self.mem_info.used_percent is None else self.mem_info.used_percent,
 
             'virtual_memory.used_percent_stats[]': lambda: self.__get_virtual_memory_used_percent_stats(),
 
             'computer.nonvolatile_memory[]': lambda: self.__get_disk_info(),
 
-            'network_interface.bytes_sent': lambda: self._format_bytes(self.computer.network_interface.bytes_sent),
+            'network_interface.bytes_sent': lambda: self._format_bytes(self.nif.bytes_sent),
 
-            'network_interface.bytes_recv': lambda: self._format_bytes(self.computer.network_interface.bytes_recv),
+            'network_interface.bytes_recv': lambda: self._format_bytes(self.nif.bytes_recv),
         }
 
     def get(self, args):
@@ -277,18 +284,18 @@ class ApiComputerInfo(RequestHandler):
         return collection
 
     def __get_processor_load_stats(self):
-        stats = self.__transform_timetable(self.computer.processor.load_stats)
+        stats = self.__transform_timetable(self.cpu_info.load_stats)
         return stats
 
     def __get_virtual_memory_used_percent_stats(self):
         stats = self.__transform_timetable(
-            self.computer.virtual_memory.used_percent_stats
+            self.mem_info.used_percent_stats
         )
         return stats
 
     def __get_disk_info(self):
         info = list()
-        for dev in self.computer.nonvolatile_memory:
+        for dev in self.disk_info:
             used_percent = dev.used_percent
             if used_percent is None:
                 used_percent = 0
