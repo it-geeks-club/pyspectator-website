@@ -44,7 +44,7 @@ Run as root user:
 
 .. code-block:: bash
 
-    pip install pyspectator_tornado
+    pip install -U pyspectator_tornado
 
 
 ==================
@@ -60,8 +60,7 @@ Most simple method, where pyspectator_tornado will be binded on port "8888" and 
     python start.py
 
 
-If you want use simple address "localhost" or
-port "8888" is busy by another application, you specify custom port, for example:
+If you want use simple address "localhost" or port "8888" is busy by another application, you specify custom port, for example:
 
 .. code-block:: bash
 

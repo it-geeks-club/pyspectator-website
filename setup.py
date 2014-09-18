@@ -1,5 +1,6 @@
 import sys
 import os
+from pyspectator_tornado import version_str
 
 try:
     from setuptools import setup
@@ -17,15 +18,18 @@ def main():
     # Describe installer
     setup(
         name='pyspectator_tornado',
-        version='1.0.4',
+        license='BSD',
+        version=version_str,
         author='Maxim Grischuk',
         author_email='uzumaxy@gmail.com',
         maintainer='Maxim Grischuk',
         maintainer_email='uzumaxy@gmail.com',
-        packages=['pyspectator_tornado'],
         url='https://github.com/uzumaxy/pyspectator_tornado',
         download_url='https://github.com/uzumaxy/pyspectator_tornado/releases',
-        license='BSD',
+        packages=['pyspectator_tornado'],
+        package_data={
+            'pyspectator_tornado': ['LICENSE', 'README.rst']
+        },
         description='pyspectator_tornado is a web-monitoring tool ported on'
                     'Tornado with pyspectator as a main monitoring module.',
         long_description=open('README.rst').read(),
@@ -43,9 +47,6 @@ def main():
             'web', 'tornado', 'www'
         ],
         platforms='Platform Independent',
-        package_data={
-            'pyspectator': ['LICENSE', 'README.rst']
-        },
         scripts=['start.py'],
         classifiers=[
             'Development Status :: 5 - Production/Stable',
