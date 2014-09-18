@@ -32,22 +32,18 @@ function NetworkInfoUpdater(params) {
     }
 
     this.__update = function() {
-        $.get(
-            '/api/computer_info/network_interface.bytes_sent&network_interface.bytes_recv',
-            function(data) {
-                var bytes_sent = data['network_interface.bytes_sent'];
-                var bytes_recv = data['network_interface.bytes_recv'];
-                if(self.actual_bytes_sent !== bytes_sent) {
-                    self.actual_bytes_sent = bytes_sent;
-                    self.__label_bytes_sent.text(bytes_sent);
-                }
-                if(self.actual_bytes_recv !== bytes_recv) {
-                    self.actual_bytes_recv = bytes_recv;
-                    self.__label_bytes_recv.text(bytes_recv);
-                }
-            },
-            'json'
-        );
+        $.getJSON('/api/comp_info/nif/bytes_sent', function(bytes_sent) {
+            if(self.actual_bytes_sent !== bytes_sent) {
+                self.actual_bytes_sent = bytes_sent;
+                self.__label_bytes_sent.text(bytes_sent);
+            }
+        });
+        $.getJSON('/api/comp_info/nif/bytes_recv', function(bytes_recv) {
+            if(self.actual_bytes_recv !== bytes_recv) {
+                self.actual_bytes_recv = bytes_recv;
+                self.__label_bytes_recv.text(bytes_recv);
+            }
+        });
     }
 
 }

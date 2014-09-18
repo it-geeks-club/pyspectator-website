@@ -55,42 +55,32 @@ function CpuInfoUpdater(params) {
     }
 
     this.__update = function() {
-        $.get(
-            '/api/computer_info/processor.load',
-            function(data) {
-                var cpu_load = data['processor.load'];
-                if((cpu_load !== null) && (self.actual_load !== cpu_load)) {
-                    self.actual_load = cpu_load;
-                    self.__label_load.text(cpu_load);
-                }
-            },
-            'json'
-        );
+        $.getJSON('/api/comp_info/cpu/load', function(cpu_load) {
+            if((cpu_load !== null) && (self.actual_load !== cpu_load)) {
+                self.actual_load = cpu_load;
+                self.__label_load.text(cpu_load);
+            }
+        });
     }
 
     this.__get_chart_data = function(callback) {
-        $.get(
-            '/api/computer_info/processor.load_stats[]',
-            function(data) {
-                var chart_data = data['processor.load_stats[]'];
-                if(chart_data.length < self.__chart_data_size) {
-                    var filled_data = [];
-                    for(var i=0; i<self.__chart_data_size-chart_data.length; i++) {
-                        filled_data.push([i, -1]);
-                    }
-                    for(var i=0, key=filled_data.length; i<chart_data.length; i++, key++) {
-                        var val = chart_data[i][1];
-                        filled_data.push([key, val]);
-                    }
-                    chart_data = filled_data;
+        $.getJSON('/api/comp_info/cpu/load_stats', function(chart_data) {
+            if(chart_data.length < self.__chart_data_size) {
+                var filled_data = [];
+                for(var i=0; i<self.__chart_data_size-chart_data.length; i++) {
+                    filled_data.push([i, -1]);
                 }
-                self.__chart_series[0].data = chart_data;
-                if(callback) {
-                    callback();
+                for(var i=0, key=filled_data.length; i<chart_data.length; i++, key++) {
+                    var val = chart_data[i][1];
+                    filled_data.push([key, val]);
                 }
-            },
-            'json'
-        );
+                chart_data = filled_data;
+            }
+            self.__chart_series[0].data = chart_data;
+            if(callback) {
+                callback();
+            }
+        });
     }
 
     this.__init_chart = function() {

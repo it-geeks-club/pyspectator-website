@@ -25,7 +25,14 @@ class WebApplication(Application):
             (r'/monitor/memory', MonitorMemoryHandler),
             (r'/monitor/disk', MonitorDiskHandler),
             (r'/monitor/network', MonitorNetworkHandler),
-            (r'/api/computer_info/([a-zA-Z0-9_\.\&\[\]^/]+)', ApiComputerInfo),
+            (r'/api/comp_info/cpu/load', ApiCpuLoad),
+            (r'/api/comp_info/cpu/load_stats', ApiCpuLoadStats),
+            (r'/api/comp_info/mem/available', ApiMemAvailable),
+            (r'/api/comp_info/mem/used_percent', ApiMemUsedPercent),
+            (r'/api/comp_info/mem/used_percent_stats', ApiMemUsedPercentStats),
+            (r'/api/comp_info/disk', ApiDisk),
+            (r'/api/comp_info/nif/bytes_sent', ApiNifBytesSent),
+            (r'/api/comp_info/nif/bytes_recv', ApiNifBytesRecv),
             (r'/about', AboutPageHandler),
             (r'.*', PageNotFoundHandler),
         ]
@@ -44,15 +51,15 @@ class WebApplication(Application):
                 '42: Answer to the Ultimate Question of Life, '
                 'the Universe, and Everything'.encode()
             ),
-            # The app will watch for changes in source files and
-            # reload itself if some file will changed
+            # The app will be watching for changes in source files and
+            # reload itself on file change
             'autoreload': True,
             # Templates will not be cached
             'compiled_template_cache': False,
-            # Static file will be not cached
+            # Static file will not be cached
             'static_hash_cache': False,
-            # When raises some Exception will be generated an error page
-            # with stack trace
+            # When raises some Exception an extended error page will be
+            # generated
             'serve_traceback': True,
             # Disable cross-site request forgery protection
             'xsrf_cookies': False
@@ -126,6 +133,12 @@ class RequestHandler(NativeRequestHandler):
         finally:
             return byte_value
 
+    def _transform_timetable(self, timetable, count=100):
+        values = list(timetable.newest_values(count))
+        keys = range(len(values))
+        collection = list(zip(keys, values))
+        return collection
+
 
 class PageNotFoundHandler(RequestHandler):
 
@@ -143,6 +156,12 @@ class UserProfileHandler(RequestHandler):
 
     def get(self, username):
         self.render('user/profile.html')
+
+
+class AboutPageHandler(RequestHandler):
+
+    def get(self):
+        self.render('about.html')
 
 
 class MonitorGeneralHandler(RequestHandler):
@@ -244,56 +263,44 @@ class MonitorNetworkHandler(RequestHandler):
         return info
 
 
-class ApiComputerInfo(RequestHandler):
+class ApiCpuLoad(RequestHandler):
 
-    def initialize(self):
-        self.__supported_parameters = {
-            'processor.load': lambda: 0 if self.cpu_info.load is None else self.cpu_info.load,
+    def get(self):
+        val = self.cpu_info.load if self.cpu_info.load else 0
+        self.write(json_encode(val))
 
-            'processor.load_stats[]': lambda: self.__get_processor_load_stats(),
 
-            'virtual_memory.available': lambda: self._format_bytes(self.mem_info.available),
+class ApiCpuLoadStats(RequestHandler):
 
-            'virtual_memory.used_percent':
-            lambda: 0 if self.mem_info.used_percent is None else self.mem_info.used_percent,
+    def get(self):
+        val = self._transform_timetable(self.cpu_info.load_stats)
+        self.write(json_encode(val))
 
-            'virtual_memory.used_percent_stats[]': lambda: self.__get_virtual_memory_used_percent_stats(),
 
-            'computer.nonvolatile_memory[]': lambda: self.__get_disk_info(),
+class ApiMemAvailable(RequestHandler):
 
-            'network_interface.bytes_sent': lambda: self._format_bytes(self.nif.bytes_sent),
+    def get(self):
+        val = self._format_bytes(self.mem_info.available)
+        self.write(json_encode(val))
 
-            'network_interface.bytes_recv': lambda: self._format_bytes(self.nif.bytes_recv),
-        }
 
-    def get(self, args):
-        answer = dict()
-        params = args.split('&')
-        for param in params:
-            if param in self.__supported_parameters:
-                getter = self.__supported_parameters[param]
-                answer[param] = getter()
-            else:
-                answer[param] = None
-        self.write(json_encode(answer))
+class ApiMemUsedPercent(RequestHandler):
 
-    def __transform_timetable(self, timetable):
-        values = list(timetable.newest_values(100))
-        keys = range(len(values))
-        collection = list(zip(keys, values))
-        return collection
+    def get(self):
+        val = self.mem_info.used_percent if self.mem_info.used_percent else 0
+        self.write(json_encode(val))
 
-    def __get_processor_load_stats(self):
-        stats = self.__transform_timetable(self.cpu_info.load_stats)
-        return stats
 
-    def __get_virtual_memory_used_percent_stats(self):
-        stats = self.__transform_timetable(
-            self.mem_info.used_percent_stats
-        )
-        return stats
+class ApiMemUsedPercentStats(RequestHandler):
 
-    def __get_disk_info(self):
+    def get(self):
+        val = self._transform_timetable(self.mem_info.used_percent_stats)
+        self.write(json_encode(val))
+
+
+class ApiDisk(RequestHandler):
+
+    def get(self):
         info = list()
         for dev in self.disk_info:
             used_percent = dev.used_percent
@@ -307,10 +314,18 @@ class ApiComputerInfo(RequestHandler):
                 'total': self._format_bytes(dev.total),
                 'used_percent': used_percent
             })
-        return info
+        self.write(json_encode(info))
 
 
-class AboutPageHandler(RequestHandler):
+class ApiNifBytesSent(RequestHandler):
 
     def get(self):
-        self.render('about.html')
+        val = self._format_bytes(self.nif.bytes_sent)
+        self.write(json_encode(val))
+
+
+class ApiNifBytesRecv(RequestHandler):
+
+    def get(self):
+        val = self._format_bytes(self.nif.bytes_recv)
+        self.write(json_encode(val))

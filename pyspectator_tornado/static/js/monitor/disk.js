@@ -45,20 +45,16 @@ function DiskDevInfoUpdater(params) {
     }
 
     this.__update = function() {
-        $.get(
-            '/api/computer_info/computer.nonvolatile_memory[]',
-            function(data) {
-                devices = [];
-                $.each(data['computer.nonvolatile_memory[]'], function() {
-                    var dev = new DiskDevInfo(this);
-                    devices.push(dev);
-                });
-                self.__check_for_old(devices);
-                self.__check_for_modified(devices);
-                self.__check_for_new(devices);
-            },
-            'json'
-        );
+        $.getJSON('/api/comp_info/disk', function(disk_info) {
+            devices = [];
+            $.each(disk_info, function() {
+                var dev = new DiskDevInfo(this);
+                devices.push(dev);
+            });
+            self.__check_for_old(devices);
+            self.__check_for_modified(devices);
+            self.__check_for_new(devices);
+        });
     }
 
     this.__check_for_old = function(devices) {
