@@ -33,7 +33,7 @@ def main():
         description='pyspectator_tornado is a web-monitoring tool ported on'
                     'Tornado with pyspectator as a main monitoring module.',
         long_description=open('README.rst').read(),
-        install_requires=['pyspectator >= 1.0.8', 'tornado >= 3.2.0'],
+        install_requires=['pyspectator >= 1.1.2', 'tornado >= 3.2.0'],
         keywords=[
             'example',
             'pyspectator', 'spectator', 'pyspectator_tornado',
@@ -78,6 +78,7 @@ def main():
             'Programming Language :: Python :: 3.2',
             'Programming Language :: Python :: 3.3',
             'Programming Language :: Python :: 3.4',
+            'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: Implementation :: CPython',
             'Programming Language :: Python',
             'Topic :: Office/Business',
